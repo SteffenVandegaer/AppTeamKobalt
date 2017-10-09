@@ -20,6 +20,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         startButton=(Button) findViewById(R.id.startButton);
         startButton.setOnClickListener(this);
+
+        //opvullen van de spinner met alle campi van UCLL (statische data zal later vervangen worden door data uit de database)
         this.arraySpinner = new String[] {
                 "Clenardus","Comenius","Diepenbeek", "Gasthuisberg", "Hertogstraat", "LiZa", "Oude Luikerbaan", "Proximus", "Sociale School"
         };
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void onClick(View v) {
         int major=0;
+        //major per campus toewijzen aan de hand van de gemaakte keuze in spinnen (zal later met data uit de database vervangen worden)
         switch(s.getSelectedItem().toString()){
             case "Clenardus":
                 major=1;
@@ -60,7 +63,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 major=9;
                 break;
         }
-        Intent intent = new Intent(this, SearchingActivity.class);
+        //starten van nieuwe activity en het doorgeven van de gewenste major aan de nieuwe activity
+        Intent intent = new Intent(this, Route_Roaming_Activity.class);
         intent.putExtra("major", major);// if its int type
         startActivity(intent);
 

@@ -25,7 +25,9 @@
         </activity>
         <activity android:name=".MainActivity" />
         <activity android:name=".SearchingActivity" />
-        <activity android:name=".BeaconFoundActivity"></activity>
+        <activity android:name=".BeaconFoundActivity" />
+        <activity android:name=".Route_Roaming_Activity" />
+        <activity android:name=".RouteChoiceActivity"></activity>
     </application>
 
 </manifest>

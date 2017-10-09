@@ -3,4 +3,6 @@
     <string name="kies_uw_campus">Kies uw Campus</string>
     <string name="title_activity_launch">LaunchActivity</string>
     <string name="ble_not_supported">BLE not supported</string>
+    <string name="next"><![CDATA[-->]]></string>
+    <string name="previous"><![CDATA[<--]]></string>
 </resources>

@@ -40,10 +40,12 @@ public class SearchingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_searching);
 
+        //ophalen van de meegstuurde major uit de vorige activity
         Intent intent = getIntent();
         majorToFind = intent.getIntExtra("major",majorToFind);
 
         testTextView=(TextView) findViewById(R.id.testTextview);
+
 
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
@@ -54,18 +56,25 @@ public class SearchingActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSION_RESPONSE);
         }
 
+
+        //starten van de scanner
         btManager = (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
         btAdapter = btManager.getAdapter();
 
         btAdapter.enable();
         scanHandler.post(scanRunnable);
+
+        startTime = System.currentTimeMillis();
+        timerHandler.postDelayed(timerRunnable, 0);
     }
 
     @Override
     public void onResume()
     {
+        //resetten van de scanner
         super.onResume();
-
+        startTime=System.currentTimeMillis();
+        timerHandler.postDelayed(timerRunnable, 0);
         teller=0;
         nearAccuracy=100;
     }
@@ -115,6 +124,7 @@ public class SearchingActivity extends AppCompatActivity {
 
                     final double accuracy = calculateDistance(TXPOWER, rssi);
 
+                    //nakijken of gevonden beacon dichterbij ligt
                     if(accuracy<nearAccuracy){
                         nearMajor=major;
                         nearMinor=minor;
@@ -123,6 +133,7 @@ public class SearchingActivity extends AppCompatActivity {
                     }
                     teller++;
                     testTextView.setText(Integer.toString(teller));
+                    //als er 5 beacons gevonden zijn wordt de beaconFound functie uitgevoerd
                     if (teller==5){
                         beaconFound(nearMajor, nearMinor, nearDistance);
                     }
@@ -135,10 +146,29 @@ public class SearchingActivity extends AppCompatActivity {
         }
     };
 
+    long startTime = 0;
 
+    //runs without a timer by reposting this handler at the end of the runnable
+    //als de timer afgelopen is en er is een beacon gevonden wordt de beaconFound functie uitgevoerd
+    Handler timerHandler = new Handler();
+    Runnable timerRunnable = new Runnable() {
+
+        @Override
+        public void run() {
+            long millis = System.currentTimeMillis() - startTime;
+            int seconds = (int) (millis / 1000);
+            if((seconds>5)&&(teller>0)&&(teller<5)){
+                teller=6;
+                timerHandler.removeCallbacks(timerRunnable);
+                beaconFound(nearMajor, nearMinor, nearDistance);
+            }
+
+            timerHandler.postDelayed(this, 500);
+        }
+    };
 
     private void beaconFound(int major, int minor, String distance){
-
+        //deze functie start de BeaconFoundActivity op en geeft de info ban het dichtsbijzijnde beacon weer
 
         Intent i = new Intent(this, BeaconFoundActivity.class);
 
@@ -160,6 +190,7 @@ public class SearchingActivity extends AppCompatActivity {
     }
 
     public double calculateDistance(int txPower, double rssi) {
+        //berekend de accuracy
         if (rssi == 0) {
             return -1.0; // if we cannot determine accuracy, return -1.
         }
@@ -174,6 +205,7 @@ public class SearchingActivity extends AppCompatActivity {
     }
 
     private String getDistance(double accuracy) {
+        //zet accuracy om in Near, Far, Immediate of Unknown
         if (accuracy == -1.0) {
             return "Unknown";
         } else if (accuracy < 1) {
@@ -189,7 +221,7 @@ public class SearchingActivity extends AppCompatActivity {
     {
         @Override
         public void run() {
-
+                //zet de scanner aan en uit a.d.h.v scan_interval_ms
                 if (isScanning)
                 {
                     if (btAdapter != null)
