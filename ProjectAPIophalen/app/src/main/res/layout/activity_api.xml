@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
-        android:text="Beacon Data"
+        android:text="@string/beacon_data"
         android:layout_marginStart="8dp"
         android:textSize="20sp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
-        android:text="All beacons"
+        android:text="@string/all_beacons"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBaseline_toBaselineOf="@+id/specificButton" />
 
@@ -64,7 +64,7 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="Klik op de knop voor data"
+                android:text="@string/klik_op_de_knop_voor_data"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -81,7 +81,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        android:text="Beacon Data"
+        android:text="@string/beacon_data_tekst"
         app:layout_constraintLeft_toRightOf="@+id/testButton"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginStart="8dp"/>

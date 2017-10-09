@@ -31,15 +31,23 @@ public class fetchspecificData extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         try {
-            //url opvragen Vaste URL. TODO
-//            getLink link = new getLink();
-//            URL opgehaaldeLink = link.verkrijgLink();
+            getLink link = new getLink();
+            //url opvragen Vaste URL.
+            URL retrievedLink = link.verkrijgLink();
+            //link aanvullen.
+            URL fullLink = new URL( retrievedLink + "/specifiek");
+            //Connectie openen (starten).
+            HttpURLConnection connection = (HttpURLConnection) fullLink.openConnection();
 
-            //link waar we data van halen.
-            URL url = new URL("http://projectbeacons.co.nf/specifiek");
 
-            //connectie openen (starten).
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+//Voor als we URL zelf meegeven.
+//            //link waar we data van halen.
+//            URL url = new URL("http://projectbeacons.co.nf/specifiek");
+//
+//            //connectie openen (starten).
+//            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+
             //lezen/schrijven van data.
             InputStream stream = connection.getInputStream();
             //Gaat de data lezen van de stream.
@@ -66,10 +74,16 @@ public class fetchspecificData extends AsyncTask<Void, Void, Void> {
             //}
 
         } catch (MalformedURLException e) {
+            //Als de url niet klopt van het protocol.
+            dataParsed = "Er is een fout opgetreden met de URL: " + e.getMessage();
             e.printStackTrace();
         } catch (IOException e) {
+            //Als de URL niet klopt.
+            dataParsed = "Er is een fout opgetreden: " + e.getMessage();
             e.printStackTrace();
         } catch (JSONException e) {
+            //fout met de JSON conversie.
+            dataParsed = "Er is een fout opgetreden met de JSON conversie: " + e.getMessage();
             e.printStackTrace();
         }
 

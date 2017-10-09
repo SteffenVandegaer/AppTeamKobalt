@@ -9,20 +9,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 public class APIActivity extends AppCompatActivity
 implements View.OnClickListener{
 
     public static TextView dataTextView;
-    private Button testButton;
-    private Button specificButton;
+    Button testButton;
+    Button specificButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +47,10 @@ implements View.OnClickListener{
                     fetchData process = new fetchData();
                     //uitvoeren.
                     process.execute();
-
                     break;
                 case R.id.specificButton:
                     fetchspecificData processSpecific = new fetchspecificData();
                     processSpecific.execute();
-
             }
         }else{
             Toast.makeText(this, "Deze applicatie vraagt wifi of 4G, gelieve deze aan te zetten",
