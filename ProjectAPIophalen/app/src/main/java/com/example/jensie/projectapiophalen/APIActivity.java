@@ -53,7 +53,7 @@ implements View.OnClickListener{
                     processSpecific.execute();
             }
         }else{
-            Toast.makeText(this, "Deze applicatie vraagt wifi of 4G, gelieve deze aan te zetten",
+            Toast.makeText(this, "Deze applicatie vraagt wifi of 4G, gelieve deze aan te zetten.",
                     Toast.LENGTH_LONG).show();
         }
     }
