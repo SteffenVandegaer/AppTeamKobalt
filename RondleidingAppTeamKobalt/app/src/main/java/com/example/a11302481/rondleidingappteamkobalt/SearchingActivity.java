@@ -9,16 +9,19 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewAnimator;
 
-import java.util.Objects;
 
 public class SearchingActivity extends AppCompatActivity {
 
@@ -36,6 +39,8 @@ public class SearchingActivity extends AppCompatActivity {
     private double nearAccuracy=100;
 
     private TextView testTextView;
+    //private ImageSwitcher gifDisplay;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,17 +73,25 @@ public class SearchingActivity extends AppCompatActivity {
 
         startTime = System.currentTimeMillis();
         timerHandler.postDelayed(timerRunnable, 0);
+
+
+        //Bitmap logo = BitmapFactory.decodeResource(this.getResources(),
+        //        R.drawable.waiting);
+
+        //gifDisplay=(ImageSwitcher) findViewById(R.id.gifDisplay);
+        //gifDisplay.setImageResource(R.drawable.waiting);
     }
 
     @Override
     public void onResume()
     {
-        //resetten van de scanner
+
         super.onResume();
         reset();
     }
 
     private void reset(){
+        //resetten van de scanner
         startTime=System.currentTimeMillis();
         previousMinor=nearMinor;
         timerHandler.postDelayed(timerRunnable, 0);
