@@ -13,16 +13,24 @@ import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import com.google.android.youtube.player.YouTubeBaseActivity;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerView;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class BeaconFoundActivity extends AppCompatActivity implements View.OnClickListener {
+public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnClickListener {
 
     private List dataToDisplay;
     private List typesOfDataToDisplay;
     private int currentIndex=0;
     private Button nextButton;
     private Button previousButton;
+    YouTubePlayerView youTubePlayerView; //youtube instance declareren
+    YouTubePlayer.OnInitializedListener onInitializedListener;
+    private static final String KEY = "AIzaSyAMtPCSxzJk0i9ErDbZySSZW_gP7wscoc4";
     private static final String TAG="BeaconFoundActivity";
 
     @Override
@@ -41,6 +49,9 @@ public class BeaconFoundActivity extends AppCompatActivity implements View.OnCli
         getContent(minor);
         nextButton=(Button) findViewById(R.id.nextButton);
         previousButton=(Button) findViewById(R.id.previousButton);
+
+        //youtube config
+
 
 
     }
@@ -73,12 +84,20 @@ public class BeaconFoundActivity extends AppCompatActivity implements View.OnCli
             case "youtube":
                 setContentView(R.layout.youtube_view);
                 checkButtons();
-                VideoView videoToDisplayVideoView=(VideoView)findViewById(R.id.videoToDisplayVideoView);
-                MediaController mediaController= new MediaController(this);
-                mediaController.setAnchorView(videoToDisplayVideoView);
-                Uri uri=Uri.parse("https://www.youtube.com/watch?v=sOCQEH5_N9Y");
-                videoToDisplayVideoView.setMediaController(mediaController);
-                videoToDisplayVideoView.setVideoURI(uri);
+                //wanneer youtube moet geladen worden
+                youTubePlayerView = (YouTubePlayerView) findViewById(R.id.youtubeVideo);
+                onInitializedListener = new YouTubePlayer.OnInitializedListener() {
+                    @Override
+                    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+                        youTubePlayer.loadVideo("mTo8GiPQdPs");
+                    }
+
+                    @Override
+                    public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+
+                    }
+                };
+                youTubePlayerView.initialize(KEY, onInitializedListener);
                 break;
         }
 
@@ -122,8 +141,8 @@ public class BeaconFoundActivity extends AppCompatActivity implements View.OnCli
                 html="<html><head><title>htmltest</title></head><body><h1>html test</h1><br/><p>dit is de html test bij het estimote beacon</p></body></html>";
                 dataToDisplay.add(3,html);
                 typesOfDataToDisplay.add(3,"html");
-                html="<html><head><title>htmltest</title></head><body><h1>html test</h1><br/><p>dit is de html test bij het estimote beacon</p></body></html>";
-                dataToDisplay.add(4,html);
+                //html="<html><head><title>htmltest</title></head><body><h1>html test</h1><br/><p>dit is de html test bij het estimote beacon</p></body></html>";
+                dataToDisplay.add(4,"mTo8GiPQdPs");
                 typesOfDataToDisplay.add(4,"youtube");
                 break;
             case 9:
