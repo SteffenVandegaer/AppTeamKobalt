@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
         //starten van nieuwe activity en het doorgeven van de gewenste major aan de nieuwe activity
-        Intent intent = new Intent(this, Route_Roaming_Activity.class);
+        Intent intent = new Intent(this, SearchingActivity.class);
         intent.putExtra("major", major);// if its int type
         startActivity(intent);
 

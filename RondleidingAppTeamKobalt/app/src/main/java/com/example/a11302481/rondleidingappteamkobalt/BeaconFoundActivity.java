@@ -109,15 +109,15 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
         previousButton=(Button) findViewById(R.id.previousButton);
         previousButton.setOnClickListener(this);
         nextButton.setOnClickListener(this);
-        previousButton.setEnabled(true);
-        nextButton.setEnabled(true);
+        previousButton.setVisibility(View.VISIBLE);
+        nextButton.setVisibility(View.VISIBLE);
         if(currentIndex==0){
 
-            previousButton.setEnabled(false);
+            previousButton.setVisibility(View.GONE);
         }
         if((currentIndex+1)==dataToDisplay.size()){
 
-            nextButton.setEnabled(false);
+            nextButton.setVisibility(View.GONE);
 
         }
     }

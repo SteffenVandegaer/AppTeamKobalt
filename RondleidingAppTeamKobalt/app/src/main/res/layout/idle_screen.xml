@@ -12,7 +12,7 @@
         android:layout_marginBottom="20dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:text="Beacons zoeken"
+        android:text="Informatiepunt Zoeken"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/ladenProgressBar"
         app:layout_constraintLeft_toLeftOf="parent"
