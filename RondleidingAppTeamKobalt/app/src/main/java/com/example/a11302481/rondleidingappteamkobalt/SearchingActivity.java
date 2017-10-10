@@ -1,10 +1,12 @@
 package com.example.a11302481.rondleidingappteamkobalt;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Handler;
@@ -30,9 +32,9 @@ public class SearchingActivity extends AppCompatActivity {
     private boolean isScanning = false;
 
 
-    private int nearMinor=0, nearMajor=0, teller=0;
+    private int nearMinor=0, nearMajor=0, teller=0, previousMinor=-1;
     private double nearAccuracy=100;
-    private String nearDistance="";
+
     private TextView testTextView;
 
     @Override
@@ -73,7 +75,12 @@ public class SearchingActivity extends AppCompatActivity {
     {
         //resetten van de scanner
         super.onResume();
+        reset();
+    }
+
+    private void reset(){
         startTime=System.currentTimeMillis();
+        previousMinor=nearMinor;
         timerHandler.postDelayed(timerRunnable, 0);
         teller=0;
         nearAccuracy=100;
@@ -116,9 +123,9 @@ public class SearchingActivity extends AppCompatActivity {
 
                     // major
                     final int major = (scanRecord[startByte + 20] & 0xff) * 0x100 + (scanRecord[startByte + 21] & 0xff);
-                if(majorToFind==major) {
                     // minor
                     final int minor = (scanRecord[startByte + 22] & 0xff) * 0x100 + (scanRecord[startByte + 23] & 0xff);
+                if((majorToFind==major)&&(minor!=previousMinor)) {
 
                     int TXPOWER = scanRecord[startByte + 24];
 
@@ -128,14 +135,13 @@ public class SearchingActivity extends AppCompatActivity {
                     if(accuracy<nearAccuracy){
                         nearMajor=major;
                         nearMinor=minor;
-                        nearDistance=getDistance(accuracy);
                         nearAccuracy=accuracy;
                     }
                     teller++;
                     testTextView.setText(Integer.toString(teller));
                     //als er 5 beacons gevonden zijn wordt de beaconFound functie uitgevoerd
                     if (teller==5){
-                        beaconFound(nearMajor, nearMinor, nearDistance);
+                        beaconFound(nearMajor, nearMinor, nearAccuracy);
                     }
 
 
@@ -160,21 +166,46 @@ public class SearchingActivity extends AppCompatActivity {
             if((seconds>5)&&(teller>0)&&(teller<5)){
                 teller=6;
                 timerHandler.removeCallbacks(timerRunnable);
-                beaconFound(nearMajor, nearMinor, nearDistance);
+                beaconFound(nearMajor, nearMinor, nearAccuracy);
+            }
+            if (seconds>10){
+                previousMinor=-1;
             }
 
             timerHandler.postDelayed(this, 500);
         }
     };
 
-    private void beaconFound(int major, int minor, String distance){
+    private void beaconFound(final int major, final int minor, double distance){
+
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        displayContent(major, minor);
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        reset();
+                        break;
+                }
+            }
+        };
+        RetrieveData dataSource=new RetrieveData();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Informatiepunt:"+dataSource.getBeaconName(minor,major)+ " gevonden op een afstand van "+String.format( "%.2f", distance )+"m. wil u de informatie van dit punt zien?").setPositiveButton("Ja", dialogClickListener)
+                .setNegativeButton("Nee", dialogClickListener).show();
+
+    }
+
+    public void displayContent(int major, int minor){
         //deze functie start de BeaconFoundActivity op en geeft de info ban het dichtsbijzijnde beacon weer
 
         Intent i = new Intent(this, BeaconFoundActivity.class);
 
         i.putExtra("major", major);
         i.putExtra("minor", minor);
-        i.putExtra("distance", distance);
         startActivity(i);
     }
 
@@ -201,19 +232,6 @@ public class SearchingActivity extends AppCompatActivity {
         else {
             double accuracy =  (0.89976)*Math.pow(ratio,7.7095) + 0.111;
             return accuracy;
-        }
-    }
-
-    private String getDistance(double accuracy) {
-        //zet accuracy om in Near, Far, Immediate of Unknown
-        if (accuracy == -1.0) {
-            return "Unknown";
-        } else if (accuracy < 1) {
-            return "Immediate";
-        } else if (accuracy < 3) {
-            return "Near";
-        } else {
-            return "Far";
         }
     }
 

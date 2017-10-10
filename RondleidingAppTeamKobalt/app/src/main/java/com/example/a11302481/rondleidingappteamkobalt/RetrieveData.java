@@ -133,4 +133,17 @@ public class RetrieveData {
         return returnList;
     }
 
+    public String getBeaconName(int minor, int major){
+        String Name="";
+        switch(minor){
+            case 11559:
+                Name="Estimote test informatiepunt";
+                break;
+            case 9:
+                Name="Galaxy S5 test informatiepunt";
+                break;
+        }
+        return Name;
+    }
+
 }
