@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Project API ophalen</string>
+    <string name="all_beacons">Alle becons</string>
+    <string name="klik_op_de_knop_voor_data" translatable="false">Klik op de knop voor data</string>
+</resources>

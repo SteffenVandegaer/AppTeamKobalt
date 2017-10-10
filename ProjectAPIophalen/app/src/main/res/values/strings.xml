@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Project API ophalen</string>
     <string name="all_beacons">All beacons</string>
-    <string name="beacon_data">Beacon Data</string>
-    <string name="beacon_data_tekst">Beacon Data</string>
-    <string name="klik_op_de_knop_voor_data">Klik op de knop voor data</string>
+    <string name="beacon_data" translatable="false">Beacon Data</string>
+    <string name="beacon_data_tekst" translatable="false">Beacon Data</string>
+    <string name="klik_op_de_knop_voor_data">Click button to get data</string>
 </resources>
