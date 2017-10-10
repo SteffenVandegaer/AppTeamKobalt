@@ -14,17 +14,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Button startButton;
     private Spinner s;
+    private RetrieveData dataSource;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         startButton=(Button) findViewById(R.id.startButton);
         startButton.setOnClickListener(this);
-
+        dataSource=new RetrieveData();
         //opvullen van de spinner met alle campi van UCLL (statische data zal later vervangen worden door data uit de database)
-        this.arraySpinner = new String[] {
-                "Clenardus","Comenius","Diepenbeek", "Gasthuisberg", "Hertogstraat", "LiZa", "Oude Luikerbaan", "Proximus", "Sociale School"
-        };
+        this.arraySpinner = dataSource.getAllCampi();
         s = (Spinner) findViewById(R.id.campusSpinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, arraySpinner);
@@ -32,37 +32,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void onClick(View v) {
-        int major=0;
+        int major=dataSource.getCampusId(s.getSelectedItem().toString());
         //major per campus toewijzen aan de hand van de gemaakte keuze in spinnen (zal later met data uit de database vervangen worden)
-        switch(s.getSelectedItem().toString()){
-            case "Clenardus":
-                major=1;
-                break;
-            case "Comenius":
-                major=2;
-                break;
-            case "Diepenbeek":
-                major=3;
-                break;
-            case "Gasthuisberg":
-                major=4;
-                break;
-            case "Hertogstraat":
-                major=5;
-                break;
-            case "LiZa":
-                major=6;
-                break;
-            case "Oude Luikerbaan":
-                major=7;
-                break;
-            case "Proximus":
-                major=8;
-                break;
-            case "Sociale School":
-                major=9;
-                break;
-        }
+
         //starten van nieuwe activity en het doorgeven van de gewenste major aan de nieuwe activity
         Intent intent = new Intent(this, SearchingActivity.class);
         intent.putExtra("major", major);// if its int type

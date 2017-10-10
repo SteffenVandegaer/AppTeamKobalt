@@ -1,17 +1,13 @@
 package com.example.a11302481.rondleidingappteamkobalt;
 
 import android.content.Intent;
-import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.MediaController;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -28,16 +24,19 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
     private int currentIndex=0;
     private Button nextButton;
     private Button previousButton;
+    private Button closeButton;
     YouTubePlayerView youTubePlayerView; //youtube instance declareren
     YouTubePlayer.OnInitializedListener onInitializedListener;
     private static final String KEY = "AIzaSyAMtPCSxzJk0i9ErDbZySSZW_gP7wscoc4";
     private static final String TAG="BeaconFoundActivity";
+    private RetrieveData dataSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dataToDisplay= new ArrayList<>();
         typesOfDataToDisplay= new ArrayList<>();
+        dataSource=new RetrieveData();
 
         //ophalen van de meegstuurde major/minor uit de vorige activity
         Intent intent = getIntent();
@@ -49,6 +48,7 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
         getContent(minor);
         nextButton=(Button) findViewById(R.id.nextButton);
         previousButton=(Button) findViewById(R.id.previousButton);
+        closeButton=(Button) findViewById(R.id.closeButton);
 
         //youtube config
 
@@ -107,10 +107,13 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
         //buttons enablen en disablen zodat de index niet out of bounds kan gaan
         nextButton=(Button) findViewById(R.id.nextButton);
         previousButton=(Button) findViewById(R.id.previousButton);
+        closeButton=(Button) findViewById(R.id.closeButton);
         previousButton.setOnClickListener(this);
         nextButton.setOnClickListener(this);
+        closeButton.setOnClickListener(this);
         previousButton.setVisibility(View.VISIBLE);
         nextButton.setVisibility(View.VISIBLE);
+        closeButton.setVisibility(View.GONE);
         if(currentIndex==0){
 
             previousButton.setVisibility(View.GONE);
@@ -118,40 +121,25 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
         if((currentIndex+1)==dataToDisplay.size()){
 
             nextButton.setVisibility(View.GONE);
-
+            closeButton.setVisibility(View.VISIBLE);
         }
     }
 
     private void getContent(int minor){
         //toewijzen van data aan beacons dit zal vervangen worden daar een call naar de api voor data ipv de statische testdata
-        int image;
-        String text;
-        String html;
-        switch(minor){
-            case 11559:
-                image = getResources().getIdentifier("next", "drawable",  getPackageName());
-                dataToDisplay.add(0,image);
-                typesOfDataToDisplay.add(0,"image");
-                image = getResources().getIdentifier("previous", "drawable",  getPackageName());
-                dataToDisplay.add(1,image);
-                typesOfDataToDisplay.add(1,"image");
-                text="u bent in de buurt van een estimote beacon";
-                dataToDisplay.add(2,text);
-                typesOfDataToDisplay.add(2,"text");
-                html="<html><head><title>htmltest</title></head><body><h1>html test</h1><br/><p>dit is de html test bij het estimote beacon</p></body></html>";
-                dataToDisplay.add(3,html);
-                typesOfDataToDisplay.add(3,"html");
-                //html="<html><head><title>htmltest</title></head><body><h1>html test</h1><br/><p>dit is de html test bij het estimote beacon</p></body></html>";
-                dataToDisplay.add(4,"mTo8GiPQdPs");
-                typesOfDataToDisplay.add(4,"youtube");
-                break;
-            case 9:
-                text="u bent in de buurt van beacon 9";
-                dataToDisplay.add(0,text);
-                typesOfDataToDisplay.add(0,"text");
-                break;
-        }
+        List returnValue=dataSource.getDataPerBeacon(minor);
+
+        dataToDisplay=(List)returnValue.get(0);
+        typesOfDataToDisplay=(List)returnValue.get(1);
         displayContent(currentIndex);
+    }
+
+    public void closeFunction(){
+        finish();
+    }
+
+    public void onBackPressed(){
+        closeFunction();
     }
 
     @Override
@@ -163,6 +151,9 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
                 break;
             case R.id.previousButton:
                 currentIndex--;
+                break;
+            case R.id.closeButton:
+                closeFunction();
                 break;
         }
         displayContent(currentIndex);

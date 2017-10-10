@@ -29,15 +29,28 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginEnd="8dp" />
 
+    <Button
+        android:id="@+id/closeButton"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
+        android:text="X"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginEnd="8dp" />
+
 
       <com.google.android.youtube.player.YouTubePlayerView
-          android:layout_width="364dp"
-          android:layout_height="441dp"
+          android:layout_width="331dp"
+          android:layout_height="276dp"
           android:id="@+id/youtubeVideo"
           app:layout_constraintTop_toTopOf="parent"
           android:layout_marginTop="8dp"
           android:layout_marginLeft="8dp"
           app:layout_constraintLeft_toLeftOf="parent"
           android:layout_marginRight="8dp"
-          app:layout_constraintRight_toRightOf="parent"></com.google.android.youtube.player.YouTubePlayerView>
+          app:layout_constraintRight_toRightOf="parent"
+          tools:layout_editor_absoluteX="43dp"></com.google.android.youtube.player.YouTubePlayerView>
 </android.support.constraint.ConstraintLayout>
