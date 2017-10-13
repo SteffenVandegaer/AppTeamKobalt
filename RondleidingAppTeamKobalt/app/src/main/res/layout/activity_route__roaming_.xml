@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.a11302481.rondleidingappteamkobalt.Route_Roaming_Activity">
+    tools:context="com.example.a11302481.rondleidingappteamkobalt.Controllers.Route_Roaming_Activity">
 
     <Button
         android:id="@+id/roamingButton"

@@ -1,4 +1,4 @@
-package com.example.a11302481.rondleidingappteamkobalt;
+package com.example.a11302481.rondleidingappteamkobalt.Models;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -120,6 +120,9 @@ public class RetrieveData {
 
                 dataToDisplay.add(2,"mTo8GiPQdPs");
                 typesOfDataToDisplay.add(2,"youtube");
+
+                dataToDisplay.add(3,"Me-sx-QQXrs");
+                typesOfDataToDisplay.add(3,"youtube");
                 break;
             case 9:
                 text="u bent in de buurt van beacon 9";

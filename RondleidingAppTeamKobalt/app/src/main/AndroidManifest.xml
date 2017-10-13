@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".LaunchActivity"
+            android:name=".Controllers.LaunchActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,11 +24,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
-        <activity android:name=".SearchingActivity" />
-        <activity android:name=".BeaconFoundActivity" />
-        <activity android:name=".Route_Roaming_Activity" />
-        <activity android:name=".RouteChoiceActivity"></activity>
+        <activity android:name=".Controllers.MainActivity" />
+        <activity android:name=".Controllers.SearchingActivity" />
+        <activity android:name=".Controllers.BeaconFoundActivity" />
+        <activity android:name=".Controllers.Route_Roaming_Activity" />
+        <activity android:name=".Controllers.RouteChoiceActivity"></activity>
     </application>
 
 </manifest>

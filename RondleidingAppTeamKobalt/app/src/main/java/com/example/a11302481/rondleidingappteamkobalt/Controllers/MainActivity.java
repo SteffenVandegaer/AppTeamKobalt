@@ -1,12 +1,16 @@
-package com.example.a11302481.rondleidingappteamkobalt;
+package com.example.a11302481.rondleidingappteamkobalt.Controllers;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+
+import com.example.a11302481.rondleidingappteamkobalt.Models.RetrieveData;
+import com.example.a11302481.rondleidingappteamkobalt.R;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -15,6 +19,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button startButton;
     private Spinner s;
     private RetrieveData dataSource;
+    private SharedPreferences savedValues;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, arraySpinner);
         s.setAdapter(adapter);
+        savedValues=getSharedPreferences("SavedValues",MODE_PRIVATE);
     }
 
     public void onClick(View v) {
@@ -39,6 +45,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent = new Intent(this, SearchingActivity.class);
         intent.putExtra("major", major);// if its int type
         startActivity(intent);
+
+    }
+
+    @Override
+    public void onPause(){
+        int positie=s.getSelectedItemPosition();
+
+        SharedPreferences.Editor editor= savedValues.edit();
+
+        editor.putInt("spinnerPositie",positie);
+        editor.commit();
+        super.onPause();
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        s.setSelection(savedValues.getInt("spinnerPositie", 0));
 
     }
 }

@@ -1,14 +1,15 @@
-package com.example.a11302481.rondleidingappteamkobalt;
+package com.example.a11302481.rondleidingappteamkobalt.Controllers;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.a11302481.rondleidingappteamkobalt.Models.RetrieveData;
+import com.example.a11302481.rondleidingappteamkobalt.R;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -56,7 +57,7 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
 
     }
 
-    private void displayContent(int index){
+    private void displayContent(final int index){
         //switch om verschillende soorten data te laten zien
         String type=(String)typesOfDataToDisplay.get(index);
         switch(type){
@@ -89,7 +90,7 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
                 onInitializedListener = new YouTubePlayer.OnInitializedListener() {
                     @Override
                     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-                        youTubePlayer.loadVideo("mTo8GiPQdPs");
+                        youTubePlayer.loadVideo((String)dataToDisplay.get(index));
                     }
 
                     @Override
