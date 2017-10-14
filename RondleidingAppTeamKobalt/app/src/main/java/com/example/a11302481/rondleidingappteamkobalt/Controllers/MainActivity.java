@@ -1,18 +1,30 @@
 package com.example.a11302481.rondleidingappteamkobalt.Controllers;
 
+import android.Manifest;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.a11302481.rondleidingappteamkobalt.Models.RetrieveData;
 import com.example.a11302481.rondleidingappteamkobalt.R;
+import com.example.a11302481.rondleidingappteamkobalt.Scanner.BeaconScanner;
+import com.example.a11302481.rondleidingappteamkobalt.Models.Beacon;
+import com.example.a11302481.rondleidingappteamkobalt.Scanner.OnScanListener;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, OnScanListener {
 
     private String[] arraySpinner;
 
@@ -20,6 +32,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Spinner s;
     private RetrieveData dataSource;
     private SharedPreferences savedValues;
+    private final static String TAG = MainActivity.class.getSimpleName();
+    private BluetoothAdapter btAdapter;
+
+    private BeaconScanner beaconScanner;
+    ArrayAdapter<String> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,10 +48,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //opvullen van de spinner met alle campi van UCLL (statische data zal later vervangen worden door data uit de database)
         this.arraySpinner = dataSource.getAllCampi();
         s = (Spinner) findViewById(R.id.campusSpinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+        adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, arraySpinner);
         s.setAdapter(adapter);
         savedValues=getSharedPreferences("SavedValues",MODE_PRIVATE);
+
+        // check for needed permissions and if they are granted, move on
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Logging
+            Log.w(TAG, "Location access not granted!");
+            // If not granted ask for permission
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 42);
+        }
+
+        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+            // show toast
+            Toast.makeText(getApplicationContext(), "BLE not supported", Toast.LENGTH_SHORT).show();
+
+            // end app
+            finish();
+        }
+
+        btAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
+        beaconScanner=new BeaconScanner(btAdapter);
+        beaconScanner.setScanEventListener(this);
+        startScan();
+
+
     }
 
     public void onClick(View v) {
@@ -44,6 +84,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //starten van nieuwe activity en het doorgeven van de gewenste major aan de nieuwe activity
         Intent intent = new Intent(this, SearchingActivity.class);
         intent.putExtra("major", major);// if its int type
+
+        stopScan();
+        beaconScanner.removeScanEventListener(this);
+
         startActivity(intent);
 
     }
@@ -64,6 +108,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onResume();
 
         s.setSelection(savedValues.getInt("spinnerPositie", 0));
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // stop scanning
+        stopScan();
+    }
+
+    private void startScan(){
+        beaconScanner.start();
+    }
+
+    private void stopScan(){
+        beaconScanner.stop();
+    }
+
+    @Override
+    public void onScanStopped() {
+
+    }
+
+    @Override
+    public void onScanStarted() {
+
+    }
+
+    @Override
+    public void onBeaconFound(Beacon beacon) {
+        s.setSelection(adapter.getPosition(dataSource.getCampusName(beacon.getMajor())));
+        stopScan();
+        beaconScanner.removeScanEventListener(this);
+
 
     }
 }

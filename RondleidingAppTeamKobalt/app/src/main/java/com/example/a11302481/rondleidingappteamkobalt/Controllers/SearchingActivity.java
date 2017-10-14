@@ -37,7 +37,7 @@ public class SearchingActivity extends AppCompatActivity implements OnScanListen
     private BeaconScanner beaconScanner;
     private Beacon nearestBeacon;
 
-    private final static String TAG = MainActivity.class.getSimpleName();
+    private final static String TAG = SearchingActivity.class.getSimpleName();
 
     // request code for bluetooth
     public static final int REQUEST_ENABLE_BT = 1;
@@ -47,10 +47,7 @@ public class SearchingActivity extends AppCompatActivity implements OnScanListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_searching);
 
-        // create BT intent
-        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        // starts the activity depending on the result
-        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+
 
         // check for needed permissions and if they are granted, move on
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -78,8 +75,14 @@ public class SearchingActivity extends AppCompatActivity implements OnScanListen
         timerHandler.postDelayed(timerRunnable, 0);
 
         BluetoothAdapter btAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
+        btAdapter.enable();
+        // create BT intent
+        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        // starts the activity depending on the result
+        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         beaconScanner=new BeaconScanner(btAdapter);
         beaconScanner.setScanEventListener(this);
+        stopScan();
         startScan();
 
 
@@ -114,6 +117,7 @@ public class SearchingActivity extends AppCompatActivity implements OnScanListen
     };
 
     private void beaconFound(){
+
         previousMinor=nearestBeacon.getMinor();
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
@@ -215,10 +219,19 @@ public class SearchingActivity extends AppCompatActivity implements OnScanListen
     @Override
     public synchronized void onBeaconFound(Beacon beacon) {
 
-        if(beacon.getMajor()==majorToFind){
+        if(beacon.getAccuracy()<5){
+            if(beacon.getMajor()==majorToFind){
 
-            if(nearestBeacon!=null){
-                if(beacon.getAccuracy()<nearestBeacon.getAccuracy()){
+                if(nearestBeacon!=null){
+                    if(beacon.getAccuracy()<nearestBeacon.getAccuracy()){
+                        if(beacon.getMinor()!=previousMinor){
+                            nearestBeacon=beacon;
+                            teller++;
+                            testTextView.setText(Integer.toString(teller));
+                        }
+
+                    }
+                }else{
                     if(beacon.getMinor()!=previousMinor){
                         nearestBeacon=beacon;
                         teller++;
@@ -226,19 +239,13 @@ public class SearchingActivity extends AppCompatActivity implements OnScanListen
                     }
 
                 }
-            }else{
-                if(beacon.getMinor()!=previousMinor){
-                    nearestBeacon=beacon;
-                    teller++;
-                    testTextView.setText(Integer.toString(teller));
+                if(teller==5){
+                    stopScan();
+                    beaconFound();
                 }
-
-            }
-            if(teller==5){
-                stopScan();
-                beaconFound();
             }
         }
+
 
     }
 }

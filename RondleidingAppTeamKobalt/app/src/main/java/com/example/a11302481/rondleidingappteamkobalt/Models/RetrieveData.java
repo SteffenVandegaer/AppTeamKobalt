@@ -27,13 +27,13 @@ public class RetrieveData {
         //major per campus toewijzen aan de hand van de gemaakte keuze in spinnen (zal later met data uit de database vervangen worden)
         switch(campusName){
             case "Clenardus":
-                major=1;
+                major=3;
                 break;
             case "Comenius":
                 major=2;
                 break;
             case "Diepenbeek":
-                major=3;
+                major=1;
                 break;
             case "Gasthuisberg":
                 major=4;
@@ -61,13 +61,13 @@ public class RetrieveData {
         String campusName="";
         //major per campus toewijzen aan de hand van de gemaakte keuze in spinner (zal later met data uit de database vervangen worden)
         switch(major){
-            case 1:
+            case 3:
                 campusName="Clenardus";
                 break;
             case 2:
                 campusName="Comenius";
                 break;
-            case 3:
+            case 1:
                 campusName="Diepenbeek";
                 break;
             case 4:
@@ -96,9 +96,11 @@ public class RetrieveData {
         List returnList;
         List dataToDisplay;
         List typesOfDataToDisplay;
+        List titleOfData;
         dataToDisplay= new ArrayList<>();
         typesOfDataToDisplay= new ArrayList<>();
         returnList=new ArrayList<>();
+        titleOfData=new ArrayList<>();
 
         int image;
         String text;
@@ -114,24 +116,25 @@ public class RetrieveData {
                 text="u bent in de buurt van een estimote beacon";
                 dataToDisplay.add(0,text);
                 typesOfDataToDisplay.add(0,"text");
+                titleOfData.add(0,"test titel met tekst");
                 html="<html><head><title>htmltest</title></head><body><h1>html test</h1><br/><p>dit is de html test bij het estimote beacon</p></body></html>";
                 dataToDisplay.add(1,html);
                 typesOfDataToDisplay.add(1,"html");
+                titleOfData.add(1,"test met html (titel)");
 
                 dataToDisplay.add(2,"mTo8GiPQdPs");
                 typesOfDataToDisplay.add(2,"youtube");
-
-                dataToDisplay.add(3,"Me-sx-QQXrs");
-                typesOfDataToDisplay.add(3,"youtube");
+                titleOfData.add(2,"Werner de walvis");
                 break;
             case 9:
                 text="u bent in de buurt van beacon 9";
                 dataToDisplay.add(0,text);
-                typesOfDataToDisplay.add(0,"text");
+                typesOfDataToDisplay.add(0,"test titel met tekst");
                 break;
         }
         returnList.add(0,dataToDisplay);
         returnList.add(1,typesOfDataToDisplay);
+        returnList.add(2,titleOfData);
 
         return returnList;
     }
