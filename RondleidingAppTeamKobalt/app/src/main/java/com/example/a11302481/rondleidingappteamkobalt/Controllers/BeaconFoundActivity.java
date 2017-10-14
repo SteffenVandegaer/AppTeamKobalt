@@ -33,6 +33,7 @@ import java.util.List;
 
 public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnClickListener, OnScanListener {
 
+    boolean shouldExecuteOnResume;
     private List dataToDisplay;
     private List typesOfDataToDisplay;
     private List titleOfData;
@@ -55,6 +56,7 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        shouldExecuteOnResume=false;
         super.onCreate(savedInstanceState);
         dataToDisplay= new ArrayList<>();
         typesOfDataToDisplay= new ArrayList<>();
@@ -189,6 +191,11 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
     }
 
     public void closeFunction(){
+
+        SharedPreferences.Editor editor= savedValues.edit();
+        editor.putInt("index",0);
+        editor.commit();
+
         finish();
     }
 
@@ -225,17 +232,18 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
     @Override
     public void onResume(){
         super.onResume();
-        if(state!=0){
-            currentIndex=savedValues.getInt("index",0);
-            displayContent(currentIndex);
-        }
-        state++;
+
+        currentIndex=savedValues.getInt("index",0);
+        displayContent(currentIndex);
+
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
     }
+
 
     @Override
     protected void onStop() {
