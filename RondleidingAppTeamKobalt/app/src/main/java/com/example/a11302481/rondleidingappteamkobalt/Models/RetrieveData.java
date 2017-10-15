@@ -2,12 +2,9 @@ package com.example.a11302481.rondleidingappteamkobalt.Models;
 
 import java.util.List;
 import java.util.ArrayList;
-import android.view.ContextThemeWrapper;
-import java.util.List;
-import android.content.Context;
-
 /**
  * Created by 11302481 on 10/10/2017.
+ *
  */
 
 public class RetrieveData {
@@ -107,6 +104,12 @@ public class RetrieveData {
         String html;
         switch(minor){
             case 11559:
+
+                //staticData staticData = new staticData();
+                //De bedoeling is om de minor door te geven naar de klasse staticdata zodat er data opgevraagd kan worden van die beacon.
+                //de data die dan opgevraagd is moet terug worden doorgegeven naar deze klasse.
+                //De verschillende soorten types moeten wel nog bekeken worden ook moet er gekeken worden hoe we de gegevens dooorsturen vanaf de klasse staticData.
+
                 //image = getResources().getIdentifier("next", "drawable",  getPackageName());
                 //dataToDisplay.add(0,image);
                 //typesOfDataToDisplay.add(0,"image");
