@@ -28,6 +28,8 @@ import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,7 +74,11 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
 
         minor=intent.getIntExtra("minor",minor);
         //haalt content op en laat deze op het scherm zien
-        getContent(minor);
+        try {
+            getContent(minor);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         nextButton=(Button) findViewById(R.id.nextButton);
         previousButton=(Button) findViewById(R.id.previousButton);
         closeButton=(Button) findViewById(R.id.closeButton);
@@ -180,7 +186,7 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
         }
     }
 
-    private void getContent(int minor){
+    private void getContent(int minor) throws JSONException {
         //toewijzen van data aan beacons dit zal vervangen worden daar een call naar de api voor data ipv de statische testdata
         List returnValue=dataSource.getDataPerBeacon(minor);
 

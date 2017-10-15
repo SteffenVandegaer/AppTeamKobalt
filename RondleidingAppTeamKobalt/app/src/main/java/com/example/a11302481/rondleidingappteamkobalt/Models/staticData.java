@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,25 +19,25 @@ import java.net.URL;
  * Deze klasse verkrijgt al de statische data van een beacon.
  */
 
-public class staticData  extends AsyncTask<Void, Void, Void> {
+public class staticData extends AsyncTask<Object, Object, JSONArray> {
 
     //bevat de data.
     private String data = "";
-    private String dataParsed = "";
-    private String singleParsed = "";
+//    //private String dataParsed = "";
+//    private String singleParsed = "";
+    int minor = 0;
+    JSONArray jA = null;
 
     @Override
-    protected Void doInBackground(Void... voids) {
+    public JSONArray doInBackground(Object... voids) {
         try {
 
             GetLink link = new GetLink();
             //url opvragen Vaste URL.
             URL retrievedLink = link.verkrijgLink();
 
-            //minorBeacon = ...
-
             //link aanvullen.
-            URL fullLink = new URL( retrievedLink + "staticdata/beacon/" );
+            URL fullLink = new URL( retrievedLink + "staticdata/beacon/" + minor );
             //Connectie openen (starten).
             HttpURLConnection connection = (HttpURLConnection) fullLink.openConnection();
 
@@ -57,44 +56,46 @@ public class staticData  extends AsyncTask<Void, Void, Void> {
             }
 
             //data in de vorm van json alles in de array zetten.
-            JSONArray jA = new JSONArray(data);
+            jA = new JSONArray(data);
 
-            for(int i = 0; i < jA.length(); i++){
-                //ieder object in de data gaan we in het JSONObject steken.
-                JSONObject jO = (JSONObject) jA.get(i);
-                //op een mooie manier laten zien dat we de data gaan binnenhalen.
-                //Je kan ook een lijst gebruiken.
-                singleParsed =
-                        "metatype: " + jO.get("metatype_sn") + "\n" +
-                        "content: " + jO.get("content_txt") + "\n";
-
-                dataParsed += singleParsed + "\n";
-
-            }
+//            for(int i = 0; i < jA.length(); i++){
+//                //ieder object in de data gaan we in het JSONObject steken.
+//                JSONObject jO = (JSONObject) jA.get(i);
+//                //op een mooie manier laten zien dat we de data gaan binnenhalen.
+//                //Je kan ook een lijst gebruiken.
+//                singleParsed =
+//                        "metatype: " + jO.get("metatype_sn") + "\n" +
+//                        "content: " + jO.get("content_txt") + "\n";
+//
+//                dataParsed += singleParsed + "\n";
+//
+//            }
 
         } catch (MalformedURLException e) {
             //Als de url niet klopt van het protocol.
-            dataParsed = "Er is een fout opgetreden met de URL: " + e.getMessage();
+//            dataParsed = "Er is een fout opgetreden met de URL: " + e.getMessage();
             e.printStackTrace();
         } catch (IOException e) {
             //Als de URL niet klopt of andere fouten.
-            dataParsed = "Er is een fout opgetreden: " + e.getMessage();
+//            dataParsed = "Er is een fout opgetreden: " + e.getMessage();
             e.printStackTrace();
         } catch (JSONException e) {
             //fout met de JSON conversie.
-            dataParsed = "Er is een fout opgetreden met de JSON conversie: " + e.getMessage();
+//            dataParsed = "Er is een fout opgetreden met de JSON conversie: " + e.getMessage();
             e.printStackTrace();
         }
-
         return null;
     }
 
-    //connectie met de UI.
-    @Override
-    protected void onPostExecute(Void aVoid){
-        super.onPostExecute(aVoid);
-        //doorgeven aan de User.
-        //APIActivity.dataTextView.setText(dataParsed);
+    //minor zetten die we doorkrijgen.
+    Void setMinor(int setMinorFromClass){
+        //verkrijgen van de minor van de andere klasse.
+        minor = setMinorFromClass;
+        return null;
     }
 
+    //verkrijgen van de data.
+    JSONArray getData(){
+        return jA;
+    }
 }
