@@ -173,6 +173,7 @@ public class SearchingActivity extends AppCompatActivity implements OnScanListen
         super.onResume();
         startScan();
         teller=0;
+        testTextView.setText(Integer.toString(teller));
 
     }
 

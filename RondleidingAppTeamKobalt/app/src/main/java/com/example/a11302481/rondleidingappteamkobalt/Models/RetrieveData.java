@@ -107,85 +107,65 @@ public class RetrieveData {
 
         int image;
         String text;
-        String html;
+        String html, title;
         String youtube;
-        switch(minor){
-            case 11559:
 
-                //class instantie
-                staticData staticData = new staticData();
+        //class instantie
+        staticData staticData = new staticData();
 
-                //minor doorgeven zodat men specifieke data kan verkrijgen van een beacon.
-                staticData.setMinor(minor);
+        //minor doorgeven zodat men specifieke data kan verkrijgen van een beacon.
+        staticData.setMinor(minor);
 
-                staticData.setMajor(major);
+        staticData.setMajor(major);
 
-                //uitvoeren van de klasse en data verkrijgen in de klasse zelf.
-                staticData.execute();
+        //uitvoeren van de klasse en data verkrijgen in de klasse zelf.
+        staticData.execute();
 
-                //data verkrijgen.
-                JSONArray jA = staticData.getData();
-                while(jA==null){
-                    jA = staticData.getData();
-                }
+        //data verkrijgen.
+        JSONArray jA = staticData.getData();
+        while(jA==null){
+            jA = staticData.getData();
+        }
 
-                //de volledige data over gaan
-                for(int i = 0; i < jA.length(); i++) {
+        //de volledige data over gaan
+        for(int i = 0; i < jA.length(); i++) {
 
-                    //per object de gegevens door geven.
-                    JSONObject jO = (JSONObject) jA.get(i);
+            //per object de gegevens door geven.
+            JSONObject jO = (JSONObject) jA.get(i);
 
-                    //type aanvragen
-                    String type = (String) jO.get("metatype_sn");
+            //type aanvragen
+            String type = (String) jO.get("metatype_sn");
 
-                    //kijken welk type en doorgeven.
-                    switch (type) {
-                        case "text":
+            //kijken welk type en doorgeven.
+            switch (type) {
+                case "text":
+                    title = (String) jO.get("title_data");
+                    text = (String) jO.get("content_txt");
+                    dataToDisplay.add(i, text);
+                    typesOfDataToDisplay.add(i, "text");
+                    titleOfData.add(i, title);
 
-                            text = (String) jO.get("content_txt");
-                            dataToDisplay.add(i, text);
-                            typesOfDataToDisplay.add(i, "text");
-                            titleOfData.add(i, "test titel met tekst");
+                    break;
 
-                            break;
+                case "youtube":
+                    title = (String) jO.get("title_data");
+                    youtube = (String) jO.get("content_txt");
+                    dataToDisplay.add(i,youtube);
+                    typesOfDataToDisplay.add(i, "youtube");
+                    titleOfData.add(i, title);
 
-                        case "youtube":
+                    break;
 
-                            youtube = (String) jO.get("content_txt");
-                            dataToDisplay.add(i,youtube);
-                            typesOfDataToDisplay.add(i, "youtube");
-                            titleOfData.add(i, "Een video");
+                case "html":
+                    title = (String) jO.get("title_data");
+                    html = (String) jO.get("content_txt");
+                    dataToDisplay.add(i, html);
+                    typesOfDataToDisplay.add(i, "html");
+                    titleOfData.add(i, title);
 
-                            break;
+                    break;
 
-                        case "html":
-
-                            html = (String) jO.get("content_txt");
-                            dataToDisplay.add(i, html);
-                            typesOfDataToDisplay.add(i, "html");
-                            titleOfData.add(i, "test met html (titel)");
-
-                            break;
-
-                        //case "image":
-
-                        //image = getResources().getIdentifier("next", "drawable",  getPackageName());
-                        //dataToDisplay.add(0,image);
-                        //typesOfDataToDisplay.add(0,"image");
-                        //image = getResources().getIdentifier("previous", "drawable",  getPackageName());
-                        //dataToDisplay.add(1,image);
-                        //typesOfDataToDisplay.add(1,"image");
-
-                        //break;
-
-                    }
-                }
-
-
-                //staticData staticData = new staticData();
-                //De bedoeling is om de minor door te geven naar de klasse staticdata zodat er data opgevraagd kan worden van die beacon.
-                //de data die dan opgevraagd is moet terug worden doorgegeven naar deze klasse.
-                //De verschillende soorten types moeten wel nog bekeken worden ook moet er gekeken worden hoe we de gegevens dooorsturen vanaf de klasse staticData.
+                //case "image":
 
                 //image = getResources().getIdentifier("next", "drawable",  getPackageName());
                 //dataToDisplay.add(0,image);
@@ -193,24 +173,10 @@ public class RetrieveData {
                 //image = getResources().getIdentifier("previous", "drawable",  getPackageName());
                 //dataToDisplay.add(1,image);
                 //typesOfDataToDisplay.add(1,"image");
-//                text="u bent in de buurt van een estimote beacon";
-//                dataToDisplay.add(0,text);
-//                typesOfDataToDisplay.add(0,"text");
-//                titleOfData.add(0,"test titel met tekst");
-//                html="<html><head><title>htmltest</title></head><body><h1>html test</h1><br/><p>dit is de html test bij het estimote beacon</p></body></html>";
-//                dataToDisplay.add(1,html);
-//                typesOfDataToDisplay.add(1,"html");
-//                titleOfData.add(1,"test met html (titel)");
-//
-//                dataToDisplay.add(2,"mTo8GiPQdPs");
-//                typesOfDataToDisplay.add(2,"youtube");
-//                titleOfData.add(2,"Werner de walvis");
-                break;
-            case 9:
-                text="u bent in de buurt van beacon 9";
-                dataToDisplay.add(0,text);
-                typesOfDataToDisplay.add(0,"test titel met tekst");
-                break;
+
+                //break;
+
+            }
         }
         //lijst toevoegen.
         returnList.add(0,dataToDisplay);

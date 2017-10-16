@@ -23,8 +23,6 @@ public class staticData extends AsyncTask<Object, Object, JSONArray> {
 
     //bevat de data.
     private String data = "";
-//    //private String dataParsed = "";
-//    private String singleParsed = "";
     int minor = 0,major;
     JSONArray jA = null;
 
@@ -58,19 +56,6 @@ public class staticData extends AsyncTask<Object, Object, JSONArray> {
             //data in de vorm van json alles in de array zetten.
             jA = new JSONArray(data);
 
-//            for(int i = 0; i < jA.length(); i++){
-//                //ieder object in de data gaan we in het JSONObject steken.
-//                JSONObject jO = (JSONObject) jA.get(i);
-//                //op een mooie manier laten zien dat we de data gaan binnenhalen.
-//                //Je kan ook een lijst gebruiken.
-//                singleParsed =
-//                        "metatype: " + jO.get("metatype_sn") + "\n" +
-//                        "content: " + jO.get("content_txt") + "\n";
-//
-//                dataParsed += singleParsed + "\n";
-//
-//            }
-
         } catch (MalformedURLException e) {
             //Als de url niet klopt van het protocol.
 //            dataParsed = "Er is een fout opgetreden met de URL: " + e.getMessage();
@@ -92,7 +77,8 @@ public class staticData extends AsyncTask<Object, Object, JSONArray> {
         //verkrijgen van de minor van de andere klasse.
         minor = setMinorFromClass;
         return null;
-}
+    }
+
     Void setMajor(int setMajorFromClass){
         //verkrijgen van de minor van de andere klasse.
         major = setMajorFromClass;
