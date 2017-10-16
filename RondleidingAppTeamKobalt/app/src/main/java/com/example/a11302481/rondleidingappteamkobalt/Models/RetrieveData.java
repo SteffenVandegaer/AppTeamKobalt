@@ -123,6 +123,9 @@ public class RetrieveData {
 
                 //data verkrijgen.
                 JSONArray jA = staticData.getData();
+                while(jA==null){
+                    jA = staticData.getData();
+                }
 
                 //de volledige data over gaan
                 for(int i = 0; i < jA.length(); i++) {
