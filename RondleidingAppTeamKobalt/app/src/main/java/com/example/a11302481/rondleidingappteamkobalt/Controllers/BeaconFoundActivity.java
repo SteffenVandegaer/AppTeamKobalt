@@ -223,15 +223,17 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
                 closeFunction();
                 break;
         }
+
+        SharedPreferences.Editor editor= savedValues.edit();
+        editor.putInt("index",currentIndex);
+        editor.commit();
+
         displayContent(currentIndex);
     }
 
     @Override
     public void onPause(){
-        SharedPreferences.Editor editor= savedValues.edit();
 
-        editor.putInt("index",currentIndex);
-        editor.commit();
         super.onPause();
     }
 
@@ -241,8 +243,6 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
 
         currentIndex=savedValues.getInt("index",0);
         displayContent(currentIndex);
-
-
     }
 
     @Override
@@ -254,6 +254,7 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
     @Override
     protected void onStop() {
         super.onStop();
+
         // stop scanning
         stopScan();
     }
