@@ -118,6 +118,8 @@ public class RetrieveData {
                 //minor doorgeven zodat men specifieke data kan verkrijgen van een beacon.
                 staticData.setMinor(minor);
 
+                staticData.setMajor(major);
+
                 //uitvoeren van de klasse en data verkrijgen in de klasse zelf.
                 staticData.execute();
 

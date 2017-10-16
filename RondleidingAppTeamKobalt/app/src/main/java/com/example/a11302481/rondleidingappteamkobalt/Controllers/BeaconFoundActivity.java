@@ -35,6 +35,7 @@ import java.util.List;
 
 public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnClickListener, OnScanListener {
 
+
     boolean shouldExecuteOnResume;
     private List dataToDisplay;
     private List typesOfDataToDisplay;
@@ -53,11 +54,14 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
 
     private BluetoothAdapter btAdapter;
     private BeaconScanner beaconScanner;
-    private int major=0, minor=0, state=0;
+    private int major=0, minor=0;
+    private SharedPreferences.Editor editor;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         shouldExecuteOnResume=false;
         super.onCreate(savedInstanceState);
         dataToDisplay= new ArrayList<>();
@@ -104,6 +108,7 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
         beaconScanner=new BeaconScanner(btAdapter);
         beaconScanner.setScanEventListener(this);
         startScan();
+        editor= savedValues.edit();
 
 
     }
@@ -199,7 +204,7 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
     public void closeFunction(){
 
         SharedPreferences.Editor editor= savedValues.edit();
-        editor.putInt("index",0);
+        editor.putInt("firstIndex",0);
         editor.commit();
 
         finish();
@@ -224,22 +229,17 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
                 break;
         }
 
-        SharedPreferences.Editor editor= savedValues.edit();
+
         editor.putInt("index",currentIndex);
-        editor.commit();
+        editor.apply();
 
         displayContent(currentIndex);
     }
 
     @Override
-    public void onPause(){
-
-        super.onPause();
-    }
-
-    @Override
     public void onResume(){
         super.onResume();
+
 
         currentIndex=savedValues.getInt("index",0);
         displayContent(currentIndex);
@@ -248,13 +248,14 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
     @Override
     protected void onStart() {
         super.onStart();
+
     }
 
 
     @Override
     protected void onStop() {
         super.onStop();
-
+        editor.commit();
         // stop scanning
         stopScan();
     }

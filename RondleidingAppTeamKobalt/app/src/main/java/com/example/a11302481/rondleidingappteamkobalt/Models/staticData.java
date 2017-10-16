@@ -25,7 +25,7 @@ public class staticData extends AsyncTask<Object, Object, JSONArray> {
     private String data = "";
 //    //private String dataParsed = "";
 //    private String singleParsed = "";
-    int minor = 0;
+    int minor = 0,major;
     JSONArray jA = null;
 
     @Override
@@ -37,7 +37,7 @@ public class staticData extends AsyncTask<Object, Object, JSONArray> {
             URL retrievedLink = link.verkrijgLink();
 
             //link aanvullen.
-            URL fullLink = new URL( retrievedLink + "staticdata/beacon/" + minor );
+            URL fullLink = new URL( retrievedLink + "staticdata/"+major+"/beacon/" + minor );
             //Connectie openen (starten).
             HttpURLConnection connection = (HttpURLConnection) fullLink.openConnection();
 
@@ -91,6 +91,11 @@ public class staticData extends AsyncTask<Object, Object, JSONArray> {
     Void setMinor(int setMinorFromClass){
         //verkrijgen van de minor van de andere klasse.
         minor = setMinorFromClass;
+        return null;
+}
+    Void setMajor(int setMajorFromClass){
+        //verkrijgen van de minor van de andere klasse.
+        major = setMajorFromClass;
         return null;
     }
 
