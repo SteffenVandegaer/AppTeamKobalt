@@ -242,6 +242,9 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
 
 
         currentIndex=savedValues.getInt("index",0);
+        if(currentIndex+1>=dataToDisplay.size()){
+            currentIndex=0;
+        }
         displayContent(currentIndex);
     }
 
