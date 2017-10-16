@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, arraySpinner);
         s.setAdapter(adapter);
-        savedValues=getSharedPreferences("SavedValues",MODE_PRIVATE);
+
 
         // check for needed permissions and if they are granted, move on
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -94,12 +94,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onPause(){
-        int positie=s.getSelectedItemPosition();
 
-        SharedPreferences.Editor editor= savedValues.edit();
-
-        editor.putInt("spinnerPositie",positie);
-        editor.commit();
         super.onPause();
     }
 
@@ -107,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onResume(){
         super.onResume();
 
-        s.setSelection(savedValues.getInt("spinnerPositie", 0));
+
 
     }
 

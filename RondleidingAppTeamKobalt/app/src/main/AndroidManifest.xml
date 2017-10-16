@@ -24,9 +24,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Controllers.MainActivity" />
-        <activity android:name=".Controllers.SearchingActivity" />
-        <activity android:name=".Controllers.BeaconFoundActivity" />
+        <activity android:name=".Controllers.MainActivity"
+                  android:configChanges="orientation|screenSize"/>
+        <activity android:name=".Controllers.SearchingActivity"
+                  android:configChanges="orientation|screenSize"/>
+        <activity android:name=".Controllers.BeaconFoundActivity"
+                  android:configChanges="orientation|screenSize"/>
         <activity android:name=".Controllers.Route_Roaming_Activity" />
         <activity android:name=".Controllers.RouteChoiceActivity"></activity>
     </application>

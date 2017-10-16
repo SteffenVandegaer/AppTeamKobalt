@@ -50,12 +50,12 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
     private static final String KEY = "AIzaSyAMtPCSxzJk0i9ErDbZySSZW_gP7wscoc4";
     private static final String TAG="BeaconFoundActivity";
     private RetrieveData dataSource;
-    private SharedPreferences savedValues;
+
 
     private BluetoothAdapter btAdapter;
     private BeaconScanner beaconScanner;
     private int major=0, minor=0;
-    private SharedPreferences.Editor editor;
+
 
 
     @Override
@@ -69,7 +69,7 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
         titleOfData=new ArrayList<>();
         dataSource=new RetrieveData();
 
-        savedValues=getSharedPreferences("SavedValues",MODE_PRIVATE);
+
 
         //ophalen van de meegstuurde major/minor uit de vorige activity
         Intent intent = getIntent();
@@ -108,7 +108,7 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
         beaconScanner=new BeaconScanner(btAdapter);
         beaconScanner.setScanEventListener(this);
         startScan();
-        editor= savedValues.edit();
+
 
 
     }
@@ -203,10 +203,6 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
 
     public void closeFunction(){
 
-        SharedPreferences.Editor editor= savedValues.edit();
-        editor.putInt("firstIndex",0);
-        editor.commit();
-
         finish();
     }
 
@@ -229,23 +225,12 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
                 break;
         }
 
-
-        editor.putInt("index",currentIndex);
-        editor.apply();
-
         displayContent(currentIndex);
     }
 
     @Override
     public void onResume(){
         super.onResume();
-
-
-        currentIndex=savedValues.getInt("index",0);
-        if(currentIndex+1>=dataToDisplay.size()){
-            currentIndex=0;
-        }
-        displayContent(currentIndex);
     }
 
     @Override
@@ -258,7 +243,7 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
     @Override
     protected void onStop() {
         super.onStop();
-        editor.commit();
+
         // stop scanning
         stopScan();
     }
