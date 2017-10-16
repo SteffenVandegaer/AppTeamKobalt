@@ -188,7 +188,7 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
 
     private void getContent(int minor) throws JSONException {
         //toewijzen van data aan beacons dit zal vervangen worden daar een call naar de api voor data ipv de statische testdata
-        List returnValue=dataSource.getDataPerBeacon(minor);
+        List returnValue=dataSource.getDataPerBeacon(minor,major);
 
         dataToDisplay=(List)returnValue.get(0);
         typesOfDataToDisplay=(List)returnValue.get(1);

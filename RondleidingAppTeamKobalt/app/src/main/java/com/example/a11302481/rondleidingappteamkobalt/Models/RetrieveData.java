@@ -95,7 +95,7 @@ public class RetrieveData {
         return campusName;
     }
 
-    public List getDataPerBeacon(int minor) throws JSONException {
+    public List getDataPerBeacon(int minor, int major) throws JSONException {
         List returnList;
         List dataToDisplay;
         List typesOfDataToDisplay;
