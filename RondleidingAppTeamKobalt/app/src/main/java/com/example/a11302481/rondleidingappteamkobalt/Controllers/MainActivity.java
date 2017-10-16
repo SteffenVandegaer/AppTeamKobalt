@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -78,18 +80,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void onClick(View v) {
-        int major=dataSource.getCampusId(s.getSelectedItem().toString());
-        //major per campus toewijzen aan de hand van de gemaakte keuze in spinnen (zal later met data uit de database vervangen worden)
 
-        //starten van nieuwe activity en het doorgeven van de gewenste major aan de nieuwe activity
-        Intent intent = new Intent(this, SearchingActivity.class);
-        intent.putExtra("major", major);// if its int type
+        //connectivity opzetten
+        ConnectivityManager cManager = (ConnectivityManager) getSystemService(this.CONNECTIVITY_SERVICE);
+        //bekijken als men verbonden is.
+        NetworkInfo nInfo = cManager.getActiveNetworkInfo();
+        //kijken als je verbonden bent of niet en toon een toast.
+        if(nInfo != null && nInfo.isConnected()) {
 
-        stopScan();
-        beaconScanner.removeScanEventListener(this);
+            int major = dataSource.getCampusId(s.getSelectedItem().toString());
+            //major per campus toewijzen aan de hand van de gemaakte keuze in spinnen (zal later met data uit de database vervangen worden)
 
-        startActivity(intent);
+            //starten van nieuwe activity en het doorgeven van de gewenste major aan de nieuwe activity
+            Intent intent = new Intent(this, SearchingActivity.class);
+            intent.putExtra("major", major);// if its int type
 
+            stopScan();
+            beaconScanner.removeScanEventListener(this);
+
+            startActivity(intent);
+        }else{
+            Toast.makeText(this, "Deze applicatie vraagt wifi of 4G, gelieve deze aan te zetten.",
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
