@@ -156,6 +156,10 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
                     @Override
                     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                         youTubePlayer.loadVideo((String)dataToDisplay.get(index));
+                        if (b)
+                        {
+                            youTubePlayer.pause();
+                        }
                     }
 
                     @Override
