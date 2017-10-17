@@ -5,7 +5,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -33,13 +32,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button startButton;
     private Spinner s;
     private RetrieveData dataSource;
-    private SharedPreferences savedValues;
     private final static String TAG = MainActivity.class.getSimpleName();
     private BluetoothAdapter btAdapter;
 
     private BeaconScanner beaconScanner;
     ArrayAdapter<String> adapter;
 
+    /**
+     * Get the campi and set them in the spinner.
+     * Check permissions an d start the scan for a beacon.
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,10 +79,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         beaconScanner=new BeaconScanner(btAdapter);
         beaconScanner.setScanEventListener(this);
         startScan();
-
-
     }
 
+    /**
+     * If user pressed start button.
+     * Check if internet service is on. Gets the selected campus and launches new activity.
+     *
+     * @param v
+     */
     public void onClick(View v) {
 
         //connectivity opzetten
@@ -105,25 +113,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    @Override
-    public void onPause(){
-
-        super.onPause();
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-
-
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
+    /**
+     * Stop the scanning when activity goes on background.
+     */
     @Override
     protected void onStop() {
         super.onStop();
@@ -131,30 +123,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         stopScan();
     }
 
+    /**
+     * Starts the scanner.
+     */
     private void startScan(){
         beaconScanner.start();
     }
 
+    /**
+     * Stops the scanner.
+     */
     private void stopScan(){
         beaconScanner.stop();
     }
 
+    /**
+     * Empty, but needed.
+     */
     @Override
     public void onScanStopped() {
 
     }
 
+    /**
+     * Empty, but needed.
+     */
     @Override
     public void onScanStarted() {
 
     }
 
+    /**
+     * If beacon is found we set the campus in the spinner according te the found beacon.
+     * And its stop the scanner.
+     *
+     * @param beacon Beacon form the beacon class.
+     */
     @Override
     public void onBeaconFound(Beacon beacon) {
         s.setSelection(adapter.getPosition(dataSource.getCampusName(beacon.getMajor())));
         stopScan();
         beaconScanner.removeScanEventListener(this);
-
-
     }
 }

@@ -40,12 +40,15 @@ public class SearchingActivity extends AppCompatActivity implements OnScanListen
     // request code for bluetooth
     public static final int REQUEST_ENABLE_BT = 1;
 
+    /**
+     * Checks if permissions is given. Activates bluetooth.
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_searching);
-
-
 
         // check for needed permissions and if they are granted, move on
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -83,18 +86,21 @@ public class SearchingActivity extends AppCompatActivity implements OnScanListen
         stopScan();
         startScan();
 
-
-        savedValues=getSharedPreferences("SavedValues",MODE_PRIVATE);
+        //savedValues=getSharedPreferences("SavedValues",MODE_PRIVATE);
     }
 
 
     long startTime = 0;
     int seconds;
-    //runs without a timer by reposting this handler at the end of the runnable
-    //als de timer afgelopen is en er is een beacon gevonden wordt de beaconFound functie uitgevoerd
     Handler timerHandler = new Handler();
     Runnable timerRunnable = new Runnable() {
 
+        /**
+         *
+         * runs without a timer by reposting this handler at the end of the runnable.
+         * If the timer is ended and there is an beacon, the beaconfound function is activated.
+         *
+         */
         @Override
         public void run() {
             long millis = System.currentTimeMillis() - startTime;
@@ -108,12 +114,17 @@ public class SearchingActivity extends AppCompatActivity implements OnScanListen
             if (seconds>10){
                 previousMinor=-1;
             }
-
-
             timerHandler.postDelayed(this, 500);
         }
     };
 
+    /**
+     *
+     * If an beacon is found there wil be an message.
+     * If the user presses "ja" the displaycontent function is launched.
+     * If the user presses "nee" the reset function is launched.
+     *
+     */
     private void beaconFound(){
 
         previousMinor=nearestBeacon.getMinor();
@@ -138,6 +149,11 @@ public class SearchingActivity extends AppCompatActivity implements OnScanListen
 
     }
 
+    /**
+     *
+     * This function launches the beacon foundactivity and gives info about the nearest beacon.
+     *
+     */
     public void displayContent(){
         //deze functie start de BeaconFoundActivity op en geeft de info ban het dichtsbijzijnde beacon weer
 
@@ -148,23 +164,24 @@ public class SearchingActivity extends AppCompatActivity implements OnScanListen
         startActivity(i);
     }
 
+    /**
+     *
+     * If application goes to background the scanner stops with scanning.
+     *
+     */
     @Override
     public void onPause(){
 
         stopScan();
 
-        SharedPreferences.Editor editor= savedValues.edit();
-
-        /*editor.putLong("startTime",startTime);
-        editor.putInt("minor",nearMinor);
-        editor.putInt("major",nearMajor);
-        editor.putInt("teller",teller);
-        editor.putFloat("accuracy",(float)nearAccuracy);
-        editor.putInt("previousMinor",previousMinor);*/
-        editor.commit();
         super.onPause();
     }
 
+    /**
+     *
+     * If the application is opened from the background the scan is restarted.
+     *
+     */
     @Override
     public void onResume(){
         super.onResume();
@@ -174,22 +191,35 @@ public class SearchingActivity extends AppCompatActivity implements OnScanListen
 
     }
 
+
+    /**
+     *
+     * When the user pressed the "nee" button, reset.
+     *
+     */
     private void reset(){
         nearestBeacon=null;
         teller=0;
         testTextView.setText(Integer.toString(teller));
         startTime = System.currentTimeMillis();
-
     }
 
-
-
+    /**
+     *
+     * When the application is started the scanning is started.
+     *
+     */
     @Override
     protected void onStart() {
         super.onStart();
         startScan();
     }
 
+    /**
+     *
+     * When the application is shutting down the scanning is stopped.
+     *
+     */
     @Override
     protected void onStop() {
         super.onStop();
@@ -197,24 +227,46 @@ public class SearchingActivity extends AppCompatActivity implements OnScanListen
         stopScan();
     }
 
+    /**
+     *
+     * Starts the scanner.
+     *
+     */
     private void startScan(){
         beaconScanner.start();
     }
 
+    /**
+     *
+     * Stops the scanner.
+     *
+     */
     private void stopScan(){
         beaconScanner.stop();
     }
 
+    /**
+     * Empty, but needed.
+     */
     @Override
     public void onScanStopped() {
 
     }
 
+    /**
+     * Empty, but needed.
+     */
     @Override
     public void onScanStarted() {
 
     }
 
+    /**
+     * If beacon is found we check if its in range of 5 meters and the majors are correct.
+     * After that its checks for nearest valid beacon.
+     *
+     * @param beacon
+     */
     @Override
     public synchronized void onBeaconFound(Beacon beacon) {
 
@@ -244,7 +296,5 @@ public class SearchingActivity extends AppCompatActivity implements OnScanListen
                 }
             }
         }
-
-
     }
 }

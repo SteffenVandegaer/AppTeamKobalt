@@ -5,7 +5,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -58,10 +57,13 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
     private int major=0, minor=0;
 
 
-
+    /**
+     * Checks if permissions is given.
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
 
         shouldExecuteOnResume=false;
         super.onCreate(savedInstanceState);
@@ -69,7 +71,6 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
         typesOfDataToDisplay= new ArrayList<>();
         titleOfData=new ArrayList<>();
         dataSource=new RetrieveData();
-
 
 
         //ophalen van de meegstuurde major/minor uit de vorige activity
@@ -109,11 +110,13 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
         beaconScanner=new BeaconScanner(btAdapter);
         beaconScanner.setScanEventListener(this);
         startScan();
-
-
-
     }
 
+    /**
+     * Shows correct page according to content.
+     *
+     * @param index
+     */
     private void displayContent(final int index){
         //switch om verschillende soorten data te laten zien
         String type=(String)typesOfDataToDisplay.get(index);
@@ -177,6 +180,11 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
 
     }
 
+    /**
+     *
+     * Hides and shows button when needed on content pages.
+     *
+     */
     private void checkButtons(){
         //buttons enablen en disablen zodat de index niet out of bounds kan gaan
         nextButton=(Button) findViewById(R.id.nextButton);
@@ -199,6 +207,12 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
         }
     }
 
+    /**
+     * Gets the content from retrievedata class.
+     *
+     * @param minor minor from beacon.
+     * @throws JSONException if exceptions occurs.
+     */
     private void getContent(int minor) throws JSONException {
         //toewijzen van data aan beacons dit zal vervangen worden daar een call naar de api voor data ipv de statische testdata
         List returnValue=dataSource.getDataPerBeacon(minor,major);
@@ -209,15 +223,32 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
         displayContent(currentIndex);
     }
 
+    /**
+     *
+     * Closes the activity and goes to previous screen.
+     *
+     */
     public void closeFunction(){
 
         finish();
     }
 
+    /**
+     *
+     * If back button is pressed the close function is called.
+     *
+     */
     public void onBackPressed(){
         closeFunction();
     }
 
+    /**
+     * If next button is pressed go to the next content page.
+     * If previous button is pressed go to the previous content page.
+     * If close button is pressed call closeFunction.
+     *
+     * @param v
+     */
     @Override
     public void onClick(View v) {
         //navigatie via de buttons op het scherm
@@ -236,18 +267,28 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
         displayContent(currentIndex);
     }
 
-    @Override
-    public void onResume(){
-        super.onResume();
-    }
+//
+//    @Override
+//    public void onResume(){
+//        super.onResume();
+//    }
 
+    /**
+     *
+     * When the application is started the scanning is started.
+     *
+     */
     @Override
     protected void onStart() {
         super.onStart();
         startScan();
     }
 
-
+    /**
+     *
+     * When the application is shutting down the scanning is stopped.
+     *
+     */
     @Override
     protected void onStop() {
         super.onStop();
@@ -256,24 +297,49 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
         stopScan();
     }
 
+    /**
+     *
+     * Starts the scanner.
+     *
+     */
     private void startScan(){
         beaconScanner.start();
     }
 
+    /**
+     *
+     * Stops the scanner.
+     *
+     */
     private void stopScan(){
         beaconScanner.stop();
     }
 
+    /**
+     *
+     * Empty, but needed.
+     *
+     */
     @Override
     public void onScanStopped() {
 
     }
 
+    /**
+     *
+     * Empty, but needed.
+     *
+     */
     @Override
     public void onScanStarted() {
 
     }
 
+    /**
+     * If you are to far away from an beacon.
+     *
+     * @param beacon
+     */
     @Override
     public void onBeaconFound(Beacon beacon) {
         if((beacon.getMajor()==major)&&(beacon.getMinor()==minor)){
