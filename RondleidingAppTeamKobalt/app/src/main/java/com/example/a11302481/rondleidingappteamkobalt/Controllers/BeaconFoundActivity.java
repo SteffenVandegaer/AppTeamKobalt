@@ -50,7 +50,8 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
     private static final String KEY = "AIzaSyAMtPCSxzJk0i9ErDbZySSZW_gP7wscoc4";
     private static final String TAG="BeaconFoundActivity";
     private RetrieveData dataSource;
-
+    private static boolean youtubeLastContent=false;
+    private static YouTubePlayer youtubePlayer2;
 
     private BluetoothAdapter btAdapter;
     private BeaconScanner beaconScanner;
@@ -116,6 +117,11 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
     private void displayContent(final int index){
         //switch om verschillende soorten data te laten zien
         String type=(String)typesOfDataToDisplay.get(index);
+        if(youtubeLastContent){
+            youtubeLastContent=false;
+
+            youtubePlayer2.pause();
+        }
         switch(type){
             case "image":
                 setContentView(R.layout.image_view);
@@ -156,10 +162,8 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
                     @Override
                     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                         youTubePlayer.loadVideo((String)dataToDisplay.get(index));
-                        if (b)
-                        {
-                            youTubePlayer.pause();
-                        }
+                        youtubeLastContent=true;
+                        youtubePlayer2=youTubePlayer;
                     }
 
                     @Override

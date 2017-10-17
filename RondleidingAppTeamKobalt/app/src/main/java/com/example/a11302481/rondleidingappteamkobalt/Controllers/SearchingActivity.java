@@ -29,8 +29,6 @@ public class SearchingActivity extends AppCompatActivity implements OnScanListen
 
     private int majorToFind, teller=0, previousMinor=-1;
 
-    private boolean activityLaunched=false;
-
     private TextView testTextView;
     private SharedPreferences savedValues;
 
@@ -124,7 +122,6 @@ public class SearchingActivity extends AppCompatActivity implements OnScanListen
             public void onClick(DialogInterface dialog, int which) {
                 switch (which){
                     case DialogInterface.BUTTON_POSITIVE:
-                        activityLaunched=true;
                         displayContent();
                         break;
 

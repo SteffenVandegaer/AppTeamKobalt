@@ -91,6 +91,9 @@ public class RetrieveData {
             case 9:
                 campusName="Sociale School";
                 break;
+            default:
+                campusName="Clenardus";
+                break;
         }
         return campusName;
     }
