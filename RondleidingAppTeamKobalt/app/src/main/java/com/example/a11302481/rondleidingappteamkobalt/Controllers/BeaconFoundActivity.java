@@ -240,7 +240,7 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
     @Override
     protected void onStart() {
         super.onStart();
-
+        startScan();
     }
 
 

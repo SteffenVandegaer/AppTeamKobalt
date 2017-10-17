@@ -190,6 +190,7 @@ public class SearchingActivity extends AppCompatActivity implements OnScanListen
     @Override
     protected void onStart() {
         super.onStart();
+        startScan();
     }
 
     @Override
