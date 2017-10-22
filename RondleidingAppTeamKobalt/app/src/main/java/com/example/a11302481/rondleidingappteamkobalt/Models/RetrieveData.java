@@ -33,10 +33,10 @@ public class RetrieveData {
                 major=3;
                 break;
             case "Comenius":
-                major=2;
+                major=2000;
                 break;
             case "Diepenbeek":
-                major=1;
+                major=1000;
                 break;
             case "Gasthuisberg":
                 major=4;
@@ -67,10 +67,10 @@ public class RetrieveData {
             case 3:
                 campusName="Clenardus";
                 break;
-            case 2:
+            case 2000:
                 campusName="Comenius";
                 break;
-            case 1:
+            case 1000:
                 campusName="Diepenbeek";
                 break;
             case 4:
@@ -142,7 +142,7 @@ public class RetrieveData {
             //kijken welk type en doorgeven.
             switch (type) {
                 case "text":
-                    title = (String) jO.get("title_data");
+                    title = (String) jO.get("title_sn");
                     text = (String) jO.get("content_txt");
                     dataToDisplay.add(i, text);
                     typesOfDataToDisplay.add(i, "text");
@@ -151,7 +151,7 @@ public class RetrieveData {
                     break;
 
                 case "youtube":
-                    title = (String) jO.get("title_data");
+                    title = (String) jO.get("title_sn");
                     youtube = (String) jO.get("content_txt");
                     dataToDisplay.add(i,youtube);
                     typesOfDataToDisplay.add(i, "youtube");
@@ -160,7 +160,7 @@ public class RetrieveData {
                     break;
 
                 case "html":
-                    title = (String) jO.get("title_data");
+                    title = (String) jO.get("title_sn");
                     html = (String) jO.get("content_txt");
                     dataToDisplay.add(i, html);
                     typesOfDataToDisplay.add(i, "html");

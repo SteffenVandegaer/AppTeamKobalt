@@ -35,7 +35,7 @@ public class staticData extends AsyncTask<Object, Object, JSONArray> {
             URL retrievedLink = link.verkrijgLink();
 
             //link aanvullen.
-            URL fullLink = new URL( retrievedLink + "staticdata/"+major+"/beacon/" + minor );
+            URL fullLink = new URL( retrievedLink + "GET/beacon/" + major + "/staticData/" + minor);
             //Connectie openen (starten).
             HttpURLConnection connection = (HttpURLConnection) fullLink.openConnection();
 

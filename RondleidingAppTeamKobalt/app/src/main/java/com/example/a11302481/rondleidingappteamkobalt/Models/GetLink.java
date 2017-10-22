@@ -15,7 +15,7 @@ public class GetLink {
         //url die we gaan gebruiken.
         try {
             //men kan hier de url aanpassen als de hosting veranderd.
-            URL url = new URL("http://projectbeacons.co.nf/");
+            URL url = new URL("http://startworx.be/public/api/v1/");
             return url;
             //moest er een fout zijn met de URL.
         } catch (MalformedURLException e) {
