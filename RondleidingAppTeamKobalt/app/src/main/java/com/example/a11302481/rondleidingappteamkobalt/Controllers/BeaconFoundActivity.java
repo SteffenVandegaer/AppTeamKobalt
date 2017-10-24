@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -20,8 +22,7 @@ import android.widget.Toast;
 import com.example.a11302481.rondleidingappteamkobalt.Models.Beacon;
 import com.example.a11302481.rondleidingappteamkobalt.Models.RetrieveData;
 import com.example.a11302481.rondleidingappteamkobalt.R;
-import com.example.a11302481.rondleidingappteamkobalt.Scanner.BeaconScanner;
-import com.example.a11302481.rondleidingappteamkobalt.Scanner.OnScanListener;
+import com.example.a11302481.rondleidingappteamkobalt.Scanner.BeaconScannerStVdg;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -32,7 +33,7 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnClickListener, OnScanListener {
+public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnClickListener {
 
 
     boolean shouldExecuteOnResume;
@@ -44,8 +45,9 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
     private Button previousButton;
     private Button closeButton;
     private TextView titelTextView;
-    YouTubePlayerView youTubePlayerView; //youtube instance declareren
-    YouTubePlayer.OnInitializedListener onInitializedListener;
+    private static YouTubePlayerView youTubePlayerView; //youtube instance declareren
+    private static YouTubePlayer.OnInitializedListener onInitializedListener;
+    YouTubePlayer.PlayerStateChangeListener playerStateChangedListener;
     private static final String KEY = "AIzaSyAMtPCSxzJk0i9ErDbZySSZW_gP7wscoc4";
     private static final String TAG="BeaconFoundActivity";
     private RetrieveData dataSource;
@@ -53,9 +55,10 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
     private static YouTubePlayer youtubePlayer2;
 
     private BluetoothAdapter btAdapter;
-    private BeaconScanner beaconScanner;
+    private BeaconScannerStVdg beaconScanner;
     private int major=0, minor=0;
-
+    private boolean searching;
+    private ConstraintLayout parentLayout;
 
     /**
      * Checks if permissions is given.
@@ -107,10 +110,49 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
         }
 
         btAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
-        beaconScanner=new BeaconScanner(btAdapter);
-        beaconScanner.setScanEventListener(this);
+        beaconScanner=new BeaconScannerStVdg(btAdapter,major);
+
+        timerHandler.postDelayed(timerRunnable, 0);
+        searching=true;
+
         startScan();
     }
+
+    Handler timerHandler = new Handler();
+    Runnable timerRunnable = new Runnable() {
+
+        /**
+         *
+         * runs without a timer by reposting this handler at the end of the runnable.
+         * If the timer is ended and there is an beacon, the beaconfound function is activated.
+         *
+         */
+        @Override
+        public void run() {
+            if(searching){
+                List beaconLijst=beaconScanner.getFoundBeacons();
+                if(!beaconLijst.isEmpty()){
+                    if(beaconLijst.get(0) instanceof Integer){
+
+                    }else {
+                        for (Object o : beaconLijst) {
+                            Beacon foundBeacon = ((Beacon) o);
+                            if(foundBeacon.getMinor()==minor){
+                                if(foundBeacon.getAccuracy()>7){
+                                    Toast.makeText(getApplicationContext(), "u bent nu te ver van het informatiepunt, ga terug of zoek een nieuw informatiepunt.", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                }
+                            }
+                        }
+                        searching = false;
+
+                    }
+                }
+            }
+
+            timerHandler.postDelayed(this, 500);
+        }
+    };
 
     /**
      * Shows correct page according to content.
@@ -156,24 +198,27 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
             case "youtube":
                 setContentView(R.layout.youtube_view);
                 checkButtons();
+                youtubePlayer2=null;
 
                 titelTextView=(TextView) findViewById(R.id.titelTextView);
                 titelTextView.setText((String)titleOfData.get(index));
                 //wanneer youtube moet geladen worden
+                onInitializedListener=null;
                 youTubePlayerView = (YouTubePlayerView) findViewById(R.id.youtubeVideo);
                 onInitializedListener = new YouTubePlayer.OnInitializedListener() {
                     @Override
                     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                         youTubePlayer.loadVideo((String)dataToDisplay.get(index));
-                        youtubeLastContent=true;
+
                         youtubePlayer2=youTubePlayer;
                     }
 
                     @Override
                     public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-
+                        Toast.makeText(getApplicationContext(), "youTube Error", Toast.LENGTH_SHORT).show();
                     }
                 };
+                
                 youTubePlayerView.initialize(KEY, onInitializedListener);
                 break;
         }
@@ -196,6 +241,8 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
         previousButton.setVisibility(View.VISIBLE);
         nextButton.setVisibility(View.VISIBLE);
         closeButton.setVisibility(View.GONE);
+
+
         if(currentIndex==0){
 
             previousButton.setVisibility(View.GONE);
@@ -230,6 +277,10 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
      */
     public void closeFunction(){
 
+        Intent intent = new Intent(this, SearchingActivity.class);
+        intent.putExtra("major", major);
+        intent.putExtra("previousMinor",minor);
+        startActivity(intent);
         finish();
     }
 
@@ -266,12 +317,6 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
 
         displayContent(currentIndex);
     }
-
-//
-//    @Override
-//    public void onResume(){
-//        super.onResume();
-//    }
 
     /**
      *
@@ -313,40 +358,5 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
      */
     private void stopScan(){
         beaconScanner.stop();
-    }
-
-    /**
-     *
-     * Empty, but needed.
-     *
-     */
-    @Override
-    public void onScanStopped() {
-
-    }
-
-    /**
-     *
-     * Empty, but needed.
-     *
-     */
-    @Override
-    public void onScanStarted() {
-
-    }
-
-    /**
-     * If you are to far away from an beacon.
-     *
-     * @param beacon
-     */
-    @Override
-    public void onBeaconFound(Beacon beacon) {
-        if((beacon.getMajor()==major)&&(beacon.getMinor()==minor)){
-            if(beacon.getAccuracy()>7){
-                Toast.makeText(getApplicationContext(), "u bent nu te ver van het informatiepunt, ga terug of zoek een nieuw informatiepunt.", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        }
     }
 }

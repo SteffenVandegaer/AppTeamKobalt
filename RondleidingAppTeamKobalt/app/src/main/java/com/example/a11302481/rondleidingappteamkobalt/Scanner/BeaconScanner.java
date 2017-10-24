@@ -47,15 +47,33 @@ public class BeaconScanner {
     // instance to handle threading
     private Handler handler;
 
+    private int majorToFind;
+
     // callback when scanned
-    private ScanCallback scanCallback =
+    private ScanCallback scanCallback =(
             new ScanCallback() {
                 @Override
                 public void onScanResult(final int callbackType, final ScanResult result) {
                     // create beacon from scan result (if result is no beacon, null is returned)
-                    final Beacon scannedBeacon = Beacon.createBeaconFromScanResult(result);
+                    final Beacon scannedBeacon = Beacon.createBeaconFromScanResult(result, majorToFind);
+
                     if (scannedBeacon != null) {
-                        handler.post(new Runnable() {
+                        final Handler mHandler;
+                        mHandler = new Handler();
+                        new Thread(new Runnable(){
+                            @Override
+                            public void run () {
+                                mHandler.post(new Runnable() {
+                                    @Override
+                                    public void run () {
+                                        for (OnScanListener l : eventListeners) {
+                                            l.onBeaconFound(scannedBeacon);
+                                        }
+                                    }
+                                });
+                            }
+                        }).start();
+                        /*handler.post(new Runnable() {
                             @Override
                             public void run() {
                                 // notify each of the listeners
@@ -63,10 +81,10 @@ public class BeaconScanner {
                                     l.onBeaconFound(scannedBeacon);
                                 }
                             }
-                        });
+                        });*/
                     }
                 }
-            };
+            });
 
 
 
@@ -83,7 +101,17 @@ public class BeaconScanner {
     public BeaconScanner(BluetoothAdapter adapter) {
         // create instances of fields
         this.adapter = adapter;
+        majorToFind=-1;
 
+        // set scanner and handler
+        scanner = adapter.getBluetoothLeScanner();
+        handler = new Handler();
+    }
+
+    public BeaconScanner(BluetoothAdapter adapter, int majorToFind) {
+        // create instances of fields
+        this.adapter = adapter;
+        this.majorToFind=majorToFind;
         // set scanner and handler
         scanner = adapter.getBluetoothLeScanner();
         handler = new Handler();

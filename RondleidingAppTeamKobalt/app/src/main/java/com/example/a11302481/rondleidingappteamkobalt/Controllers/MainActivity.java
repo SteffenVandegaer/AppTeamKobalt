@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -21,11 +22,12 @@ import android.widget.Toast;
 
 import com.example.a11302481.rondleidingappteamkobalt.Models.RetrieveData;
 import com.example.a11302481.rondleidingappteamkobalt.R;
-import com.example.a11302481.rondleidingappteamkobalt.Scanner.BeaconScanner;
 import com.example.a11302481.rondleidingappteamkobalt.Models.Beacon;
-import com.example.a11302481.rondleidingappteamkobalt.Scanner.OnScanListener;
+import com.example.a11302481.rondleidingappteamkobalt.Scanner.BeaconScannerStVdg;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, OnScanListener {
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private String[] arraySpinner;
 
@@ -34,8 +36,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private RetrieveData dataSource;
     private final static String TAG = MainActivity.class.getSimpleName();
     private BluetoothAdapter btAdapter;
+    private boolean searching;
+    private Beacon nearestBeacon;
 
-    private BeaconScanner beaconScanner;
+    private BeaconScannerStVdg beaconScanner;
     ArrayAdapter<String> adapter;
 
     /**
@@ -76,10 +80,48 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         btAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
-        beaconScanner=new BeaconScanner(btAdapter);
-        beaconScanner.setScanEventListener(this);
+        beaconScanner=new BeaconScannerStVdg(btAdapter);
+        timerHandler.postDelayed(timerRunnable, 0);
+        searching=true;
         startScan();
     }
+
+    Handler timerHandler = new Handler();
+    Runnable timerRunnable = new Runnable() {
+
+        /**
+         *
+         * runs without a timer by reposting this handler at the end of the runnable.
+         * If the timer is ended and there is an beacon, the beaconfound function is activated.
+         *
+         */
+        @Override
+        public void run() {
+            if(searching){
+                List beaconLijst=beaconScanner.getFoundBeacons();
+                if(!beaconLijst.isEmpty()){
+                    if(beaconLijst.get(0) instanceof Integer){
+
+                    }else {
+                        for (Object o : beaconLijst) {
+                            Beacon foundBeacon = ((Beacon) o);
+                            if (nearestBeacon == null) {
+                                nearestBeacon = foundBeacon;
+                            } else {
+                                if (nearestBeacon.getAccuracy() > foundBeacon.getAccuracy()) {
+                                    nearestBeacon = foundBeacon;
+                                }
+                            }
+                        }
+                        searching = false;
+                        s.setSelection(adapter.getPosition(dataSource.getCampusName(nearestBeacon.getMajor())));
+                    }
+                }
+            }
+
+            timerHandler.postDelayed(this, 500);
+        }
+    };
 
     /**
      * If user pressed start button.
@@ -104,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             intent.putExtra("major", major);// if its int type
 
             stopScan();
-            beaconScanner.removeScanEventListener(this);
+
 
             startActivity(intent);
         }else{
@@ -135,34 +177,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void stopScan(){
         beaconScanner.stop();
-    }
-
-    /**
-     * Empty, but needed.
-     */
-    @Override
-    public void onScanStopped() {
-
-    }
-
-    /**
-     * Empty, but needed.
-     */
-    @Override
-    public void onScanStarted() {
-
-    }
-
-    /**
-     * If beacon is found we set the campus in the spinner according te the found beacon.
-     * And its stop the scanner.
-     *
-     * @param beacon Beacon form the beacon class.
-     */
-    @Override
-    public void onBeaconFound(Beacon beacon) {
-        s.setSelection(adapter.getPosition(dataSource.getCampusName(beacon.getMajor())));
-        stopScan();
-        beaconScanner.removeScanEventListener(this);
     }
 }

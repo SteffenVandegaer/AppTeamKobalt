@@ -13,7 +13,7 @@ public class Beacon {
     private double rssi, accuracy=100;
     private int txPower;
 
-    public static Beacon createBeaconFromScanResult(@NonNull final ScanResult result) {
+    public static Beacon createBeaconFromScanResult(@NonNull final ScanResult result, int majorToFind) {
         // get the scan record
         ScanRecord scanRecord = result.getScanRecord();
         // if scan record doesn't exist
@@ -43,30 +43,57 @@ public class Beacon {
         // if result is a Beacon
         // => create one from the data.
         if (isBeacon){
-            // create Beacon
-            Beacon scannedBeacon = new Beacon();
-            // set bluetoothDevice
-            //scannedBeacon.bluetoothDevice = result.getDevice();
+            int foundMajor=(bytesScanRecord[startByte + 20] & 0xff) * 0x100 + (bytesScanRecord[startByte + 21] & 0xff);
+            boolean validBeacon;
+            if(majorToFind==-1){
+                validBeacon=true;
+            }else{
 
-            // set rssi
-            scannedBeacon.rssi = result.getRssi();
-            // set power (sort of batterypower???)
-            scannedBeacon.txPower = bytesScanRecord[startByte + 24];
+                if(foundMajor==majorToFind){
+                    validBeacon=true;
+                }else{
+                    validBeacon=false;
+                }
+            }
 
-            // major
-            scannedBeacon.major = (bytesScanRecord[startByte + 20] & 0xff) * 0x100 + (bytesScanRecord[startByte + 21] & 0xff);
-            // minor
-            scannedBeacon.minor = (bytesScanRecord[startByte + 22] & 0xff) * 0x100 + (bytesScanRecord[startByte + 23] & 0xff);
+            if(validBeacon){
+                // create Beacon
+                Beacon scannedBeacon = new Beacon();
+                // set bluetoothDevice
+                //scannedBeacon.bluetoothDevice = result.getDevice();
 
-            scannedBeacon.calculateAccuracy();
-            // return created Beacon
-            return scannedBeacon;
+                // set rssi
+                scannedBeacon.rssi = result.getRssi();
+                // set power (sort of batterypower???)
+                scannedBeacon.txPower = bytesScanRecord[startByte + 24];
+
+                // major
+                scannedBeacon.major = (bytesScanRecord[startByte + 20] & 0xff) * 0x100 + (bytesScanRecord[startByte + 21] & 0xff);
+                // minor
+                scannedBeacon.minor = (bytesScanRecord[startByte + 22] & 0xff) * 0x100 + (bytesScanRecord[startByte + 23] & 0xff);
+
+                scannedBeacon.calculateAccuracy();
+                // return created Beacon
+                return scannedBeacon;
+            }else{
+                return null;
+            }
+
         }
 
         // This ain't no beacon!! => return null
         return null;
     }
     public Beacon(){}
+
+    public Beacon(int major, int minor, double rssi, int txPower){
+        this.major=major;
+        this.minor=minor;
+        this.rssi=rssi;
+        this.txPower=txPower;
+
+        calculateAccuracy();
+    }
 
     public int getMajor(){
         return major;

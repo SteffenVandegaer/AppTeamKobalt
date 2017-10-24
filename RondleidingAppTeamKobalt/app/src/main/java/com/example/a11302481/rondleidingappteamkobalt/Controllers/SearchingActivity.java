@@ -7,33 +7,38 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.a11302481.rondleidingappteamkobalt.Models.RetrieveData;
 import com.example.a11302481.rondleidingappteamkobalt.Models.Beacon;
-import com.example.a11302481.rondleidingappteamkobalt.Scanner.BeaconScanner;
-import com.example.a11302481.rondleidingappteamkobalt.Scanner.OnScanListener;
+import com.example.a11302481.rondleidingappteamkobalt.Scanner.BeaconScannerStVdg;
 import com.example.a11302481.rondleidingappteamkobalt.R;
 
+import java.util.ArrayList;
+import java.util.List;
 
-public class SearchingActivity extends AppCompatActivity implements OnScanListener {
 
-    private int majorToFind, teller=0, previousMinor=-1;
+public class SearchingActivity extends AppCompatActivity{
+
+    private int majorToFind, previousMinor=-1;
+
+    private static List previousMinors=new ArrayList<>();
+
 
     private TextView testTextView;
-    private SharedPreferences savedValues;
 
-    private BeaconScanner beaconScanner;
+    private BeaconScannerStVdg beaconScanner;
     private Beacon nearestBeacon;
+    private boolean searching=true;
 
     private final static String TAG = SearchingActivity.class.getSimpleName();
 
@@ -69,29 +74,31 @@ public class SearchingActivity extends AppCompatActivity implements OnScanListen
         //ophalen van de meegstuurde major uit de vorige activity
         Intent intent = getIntent();
         majorToFind = intent.getIntExtra("major",majorToFind);
-
+        previousMinor=intent.getIntExtra("previousMinor",previousMinor);
         testTextView=(TextView) findViewById(R.id.testTextview);
 
         startTime = System.currentTimeMillis();
         timerHandler.postDelayed(timerRunnable, 0);
 
-        BluetoothAdapter btAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
-        btAdapter.enable();
+
         // create BT intent
         Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
         // starts the activity depending on the result
         startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        beaconScanner=new BeaconScanner(btAdapter);
-        beaconScanner.setScanEventListener(this);
-        stopScan();
-        startScan();
+
+        BluetoothAdapter btAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
+        btAdapter.enable();
+        beaconScanner=new BeaconScannerStVdg(btAdapter,majorToFind,5);
+        //beaconScanner.setScanEventListener(this);
+
 
         //savedValues=getSharedPreferences("SavedValues",MODE_PRIVATE);
     }
 
 
     long startTime = 0;
-    int seconds;
+
+    int seconds, previousSeconds=0;
     Handler timerHandler = new Handler();
     Runnable timerRunnable = new Runnable() {
 
@@ -103,17 +110,91 @@ public class SearchingActivity extends AppCompatActivity implements OnScanListen
          */
         @Override
         public void run() {
+            if(searching){
+                List beaconLijst=beaconScanner.getFoundBeacons();
+                if(!beaconLijst.isEmpty()){
+                    if(beaconLijst.get(0) instanceof Integer){
+
+                    }else{
+
+                        for(Object o:beaconLijst){
+                            Beacon foundBeacon=(Beacon)o;
+                            if(nearestBeacon==null){
+                                nearestBeacon=foundBeacon;
+                            }else{
+                                if(previousMinors.size()>0){
+                                    for(Object O:previousMinors){
+                                        List<Integer> i = ((List<Integer>) O);
+                                        if(foundBeacon.getMinor()!=i.get(0)){
+                                            if(nearestBeacon.getAccuracy()>foundBeacon.getAccuracy()){
+                                                nearestBeacon=foundBeacon;
+                                                searching=false;
+                                                List previousMinor=new ArrayList();
+                                                previousMinor.add(0,nearestBeacon.getMinor());
+                                                previousMinor.add(1,0);
+                                                previousMinors.add(previousMinor);
+                                                beaconFound();
+                                            }
+                                        }
+                                    }
+                                }else{
+                                    nearestBeacon=foundBeacon;
+                                    searching=false;
+                                    List previousMinor=new ArrayList();
+                                    previousMinor.add(0,nearestBeacon.getMinor());
+                                    previousMinor.add(1,0);
+                                    previousMinors.add(previousMinor);
+                                    beaconFound();
+                                }
+
+
+                            }
+                        }
+
+                    }
+                }
+            }
+
+
+
             long millis = System.currentTimeMillis() - startTime;
             seconds = (int) (millis / 1000);
 
-            if((seconds>5)&&(teller>0)&&(teller<5)){
+            /*if((seconds>5)&&(teller>0)&&(teller<5)){
                 teller=6;
                 timerHandler.removeCallbacks(timerRunnable);
                 beaconFound();
+            }*/
+            int teller=0;
+            List<Object> indexesToDelete=new ArrayList<>();
+            String test= "";
+            if(previousSeconds!=seconds){
+                previousSeconds=seconds;
+                if(previousMinors.size()>0) {
+                    for (Object O : previousMinors) {
+                        List<Integer> i = ((List<Integer>) O);
+                        if (i.get(1) >= 10) {
+                            indexesToDelete.add(O);
+                        } else {
+                            List previousMinor=new ArrayList();
+                            previousMinor.add(0,nearestBeacon.getMinor());
+                            previousMinor.add(1,i.get(1) + 1);
+                            previousMinors.set(teller, previousMinor);
+                        }
+                        test+=i.get(0)+" ,";
+                        teller++;
+                    }
+                }
+
+                if(indexesToDelete.size()>0){
+                    int size=indexesToDelete.size();
+                    for(int i=size;i>0;i--){
+                        previousMinors.remove(indexesToDelete.get(i-1));
+                    }
+                }
             }
-            if (seconds>10){
-                previousMinor=-1;
-            }
+            testTextView.setText(test);
+
             timerHandler.postDelayed(this, 500);
         }
     };
@@ -127,7 +208,9 @@ public class SearchingActivity extends AppCompatActivity implements OnScanListen
      */
     private void beaconFound(){
 
-        previousMinor=nearestBeacon.getMinor();
+        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        // Vibrate for 500 milliseconds
+        v.vibrate(500);
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -162,6 +245,7 @@ public class SearchingActivity extends AppCompatActivity implements OnScanListen
         i.putExtra("major", nearestBeacon.getMajor());
         i.putExtra("minor", nearestBeacon.getMinor());
         startActivity(i);
+        finish();
     }
 
     /**
@@ -171,8 +255,6 @@ public class SearchingActivity extends AppCompatActivity implements OnScanListen
      */
     @Override
     public void onPause(){
-
-        stopScan();
 
         super.onPause();
     }
@@ -185,9 +267,9 @@ public class SearchingActivity extends AppCompatActivity implements OnScanListen
     @Override
     public void onResume(){
         super.onResume();
+
         startScan();
-        teller=0;
-        testTextView.setText(Integer.toString(teller));
+        startTime = System.currentTimeMillis();
 
     }
 
@@ -198,10 +280,9 @@ public class SearchingActivity extends AppCompatActivity implements OnScanListen
      *
      */
     private void reset(){
-        nearestBeacon=null;
-        teller=0;
-        testTextView.setText(Integer.toString(teller));
-        startTime = System.currentTimeMillis();
+        searching=true;
+        startTime=System.currentTimeMillis();
+
     }
 
     /**
@@ -245,56 +326,6 @@ public class SearchingActivity extends AppCompatActivity implements OnScanListen
         beaconScanner.stop();
     }
 
-    /**
-     * Empty, but needed.
-     */
-    @Override
-    public void onScanStopped() {
 
-    }
 
-    /**
-     * Empty, but needed.
-     */
-    @Override
-    public void onScanStarted() {
-
-    }
-
-    /**
-     * If beacon is found we check if its in range of 5 meters and the majors are correct.
-     * After that its checks for nearest valid beacon.
-     *
-     * @param beacon
-     */
-    @Override
-    public synchronized void onBeaconFound(Beacon beacon) {
-
-        if(beacon.getAccuracy()<5){
-            if(beacon.getMajor()==majorToFind){
-
-                if(nearestBeacon!=null){
-                    if(beacon.getAccuracy()<nearestBeacon.getAccuracy()){
-                        if(beacon.getMinor()!=previousMinor){
-                            nearestBeacon=beacon;
-                            teller++;
-                            testTextView.setText(Integer.toString(teller));
-                        }
-
-                    }
-                }else{
-                    if(beacon.getMinor()!=previousMinor){
-                        nearestBeacon=beacon;
-                        teller++;
-                        testTextView.setText(Integer.toString(teller));
-                    }
-
-                }
-                if(teller==5){
-                    stopScan();
-                    beaconFound();
-                }
-            }
-        }
-    }
 }
