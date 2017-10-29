@@ -6,9 +6,10 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.constraint.ConstraintLayout;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -24,19 +25,15 @@ import com.example.a11302481.rondleidingappteamkobalt.Models.RetrieveData;
 import com.example.a11302481.rondleidingappteamkobalt.R;
 import com.example.a11302481.rondleidingappteamkobalt.Scanner.BeaconScannerStVdg;
 import com.google.android.youtube.player.YouTubeBaseActivity;
-import com.google.android.youtube.player.YouTubeInitializationResult;
-import com.google.android.youtube.player.YouTubePlayer;
-import com.google.android.youtube.player.YouTubePlayerView;
 
 import org.json.JSONException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnClickListener {
 
-
-    boolean shouldExecuteOnResume;
     private List dataToDisplay;
     private List typesOfDataToDisplay;
     private List titleOfData;
@@ -45,30 +42,25 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
     private Button previousButton;
     private Button closeButton;
     private TextView titelTextView;
-    private static YouTubePlayerView youTubePlayerView; //youtube instance declareren
-    private static YouTubePlayer.OnInitializedListener onInitializedListener;
-    YouTubePlayer.PlayerStateChangeListener playerStateChangedListener;
-    private static final String KEY = "AIzaSyAMtPCSxzJk0i9ErDbZySSZW_gP7wscoc4";
     private static final String TAG="BeaconFoundActivity";
     private RetrieveData dataSource;
     private static boolean youtubeLastContent=false;
-    private static YouTubePlayer youtubePlayer2;
 
     private BluetoothAdapter btAdapter;
     private BeaconScannerStVdg beaconScanner;
     private int major=0, minor=0;
     private boolean searching;
-    private ConstraintLayout parentLayout;
 
     /**
      * Checks if permissions is given.
      *
      * @param savedInstanceState
      */
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        shouldExecuteOnResume=false;
+
         super.onCreate(savedInstanceState);
         dataToDisplay= new ArrayList<>();
         typesOfDataToDisplay= new ArrayList<>();
@@ -82,6 +74,9 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
         major=intent.getIntExtra("major",major);
 
         minor=intent.getIntExtra("minor",minor);
+
+        currentIndex=intent.getIntExtra("currentIndex",currentIndex);
+
         //haalt content op en laat deze op het scherm zien
         try {
             getContent(minor);
@@ -138,7 +133,7 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
                         for (Object o : beaconLijst) {
                             Beacon foundBeacon = ((Beacon) o);
                             if(foundBeacon.getMinor()==minor){
-                                if(foundBeacon.getAccuracy()>7){
+                                if(foundBeacon.getAccuracy()>6){
                                     Toast.makeText(getApplicationContext(), "u bent nu te ver van het informatiepunt, ga terug of zoek een nieuw informatiepunt.", Toast.LENGTH_SHORT).show();
                                     finish();
                                 }
@@ -162,11 +157,6 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
     private void displayContent(final int index){
         //switch om verschillende soorten data te laten zien
         String type=(String)typesOfDataToDisplay.get(index);
-        if(youtubeLastContent){
-            youtubeLastContent=false;
-
-            youtubePlayer2.pause();
-        }
         switch(type){
             case "image":
                 setContentView(R.layout.image_view);
@@ -196,30 +186,15 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
                 titelTextView.setText((String)titleOfData.get(index));
                 break;
             case "youtube":
-                setContentView(R.layout.youtube_view);
-                checkButtons();
-                youtubePlayer2=null;
+                Intent i =new Intent(this,YouTube_Activity.class);
+                i.putExtra("currentIndex",currentIndex);
+                i.putExtra("max",dataToDisplay.size());
+                i.putExtra("major",major);
+                i.putExtra("minor",minor);
+                i.putExtra("data",(String)dataToDisplay.get(index));
+                startActivity(i);
+                finish();
 
-                titelTextView=(TextView) findViewById(R.id.titelTextView);
-                titelTextView.setText((String)titleOfData.get(index));
-                //wanneer youtube moet geladen worden
-                onInitializedListener=null;
-                youTubePlayerView = (YouTubePlayerView) findViewById(R.id.youtubeVideo);
-                onInitializedListener = new YouTubePlayer.OnInitializedListener() {
-                    @Override
-                    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-                        youTubePlayer.loadVideo((String)dataToDisplay.get(index));
-
-                        youtubePlayer2=youTubePlayer;
-                    }
-
-                    @Override
-                    public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-                        Toast.makeText(getApplicationContext(), "youTube Error", Toast.LENGTH_SHORT).show();
-                    }
-                };
-                
-                youTubePlayerView.initialize(KEY, onInitializedListener);
                 break;
         }
 

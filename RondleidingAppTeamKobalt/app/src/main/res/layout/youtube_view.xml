@@ -58,10 +58,12 @@
     <com.google.android.youtube.player.YouTubePlayerView
         android:id="@+id/youtubeVideo"
         android:layout_width="0dp"
-        android:layout_height="276dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/previousButton"
         app:layout_constraintHorizontal_bias="0.513"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

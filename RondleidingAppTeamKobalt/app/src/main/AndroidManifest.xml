@@ -35,6 +35,7 @@
                   android:configChanges="orientation|screenSize"/>
         <activity android:name=".Controllers.Route_Roaming_Activity" />
         <activity android:name=".Controllers.RouteChoiceActivity"></activity>
+        <activity android:name=".Controllers.YouTube_Activity"></activity>
     </application>
 
 </manifest>
