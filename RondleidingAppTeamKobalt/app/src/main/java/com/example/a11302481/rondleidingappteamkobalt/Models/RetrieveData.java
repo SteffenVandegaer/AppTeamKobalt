@@ -30,31 +30,31 @@ public class RetrieveData {
         //major per campus toewijzen aan de hand van de gemaakte keuze in spinnen (zal later met data uit de database vervangen worden)
         switch(campusName){
             case "Clenardus":
-                major=3;
+                major=3000;
                 break;
             case "Comenius":
-                major=2;
+                major=2000;
                 break;
             case "Diepenbeek":
-                major=1;
+                major=1000;
                 break;
             case "Gasthuisberg":
-                major=4;
+                major=4000;
                 break;
             case "Hertogstraat":
-                major=5;
+                major=5000;
                 break;
             case "LiZa":
-                major=6;
+                major=6000;
                 break;
             case "Oude Luikerbaan":
-                major=7;
+                major=7000;
                 break;
             case "Proximus":
-                major=8;
+                major=8000;
                 break;
             case "Sociale School":
-                major=9;
+                major=9000;
                 break;
         }
         return major;
@@ -64,31 +64,31 @@ public class RetrieveData {
         String campusName="";
         //major per campus toewijzen aan de hand van de gemaakte keuze in spinner (zal later met data uit de database vervangen worden)
         switch(major){
-            case 3:
+            case 3000:
                 campusName="Clenardus";
                 break;
-            case 2:
+            case 2000:
                 campusName="Comenius";
                 break;
-            case 1:
+            case 1000:
                 campusName="Diepenbeek";
                 break;
-            case 4:
+            case 4000:
                 campusName="Gasthuisberg";
                 break;
-            case 5:
+            case 5000:
                 campusName="Hertogstraat";
                 break;
-            case 6:
+            case 6000:
                 campusName="LiZa";
                 break;
-            case 7:
+            case 7000:
                 campusName="Oude Luikerbaan";
                 break;
-            case 8:
+            case 8000:
                 campusName="Proximus";
                 break;
-            case 9:
+            case 9000:
                 campusName="Sociale School";
                 break;
             default:
@@ -130,57 +130,70 @@ public class RetrieveData {
             jA = staticData.getData();
         }
 
-        //de volledige data over gaan
-        for(int i = 0; i < jA.length(); i++) {
+        if (jA.length() == 0){
 
-            //per object de gegevens door geven.
-            JSONObject jO = (JSONObject) jA.get(i);
+            title = "Geen content";
+            text = "Deze beacon bevat nog geen content";
+            dataToDisplay.add(0,text);
+            typesOfDataToDisplay.add(0,"text");
+            titleOfData.add(0, title);
 
-            //type aanvragen
-            String type = (String) jO.get("metatype_sn");
+        }else{
 
-            //kijken welk type en doorgeven.
-            switch (type) {
-                case "text":
-                    title = (String) jO.get("title_data");
-                    text = (String) jO.get("content_txt");
-                    dataToDisplay.add(i, text);
-                    typesOfDataToDisplay.add(i, "text");
-                    titleOfData.add(i, title);
+            //de volledige data over gaan
+            for(int i = 0; i < jA.length(); i++) {
 
-                    break;
+                //per object de gegevens door geven.
+                JSONObject jO = (JSONObject) jA.get(i);
 
-                case "youtube":
-                    title = (String) jO.get("title_data");
-                    youtube = (String) jO.get("content_txt");
-                    dataToDisplay.add(i,youtube);
-                    typesOfDataToDisplay.add(i, "youtube");
-                    titleOfData.add(i, title);
+                //type aanvragen
+                String type = (String) jO.get("metatype_sn");
 
-                    break;
+                //kijken welk type en doorgeven.
+                switch (type) {
+                    case "text":
+                        title = (String) jO.get("title_sn");
+                        text = (String) jO.get("content_txt");
+                        dataToDisplay.add(i, text);
+                        typesOfDataToDisplay.add(i, "text");
+                        titleOfData.add(i, title);
 
-                case "html":
-                    title = (String) jO.get("title_data");
-                    html = (String) jO.get("content_txt");
-                    dataToDisplay.add(i, html);
-                    typesOfDataToDisplay.add(i, "html");
-                    titleOfData.add(i, title);
+                        break;
 
-                    break;
+                    case "youtube":
+                        title = (String) jO.get("title_sn");
+                        youtube = (String) jO.get("content_txt");
+                        dataToDisplay.add(i,youtube);
+                        typesOfDataToDisplay.add(i, "youtube");
+                        titleOfData.add(i, title);
 
-                //case "image":
+                        break;
 
-                //image = getResources().getIdentifier("next", "drawable",  getPackageName());
-                //dataToDisplay.add(0,image);
-                //typesOfDataToDisplay.add(0,"image");
-                //image = getResources().getIdentifier("previous", "drawable",  getPackageName());
-                //dataToDisplay.add(1,image);
-                //typesOfDataToDisplay.add(1,"image");
+                    case "html":
+                        title = (String) jO.get("title_sn");
+                        html = (String) jO.get("content_txt");
+                        dataToDisplay.add(i, html);
+                        typesOfDataToDisplay.add(i, "html");
+                        titleOfData.add(i, title);
 
-                //break;
+                        break;
 
+                    //case "image":
+
+                    //image = getResources().getIdentifier("next", "drawable",  getPackageName());
+                    //dataToDisplay.add(0,image);
+                    //typesOfDataToDisplay.add(0,"image");
+                    //image = getResources().getIdentifier("previous", "drawable",  getPackageName());
+                    //dataToDisplay.add(1,image);
+                    //typesOfDataToDisplay.add(1,"image");
+
+                    //break;
+
+                }
             }
+
         }
+
         //lijst toevoegen.
         returnList.add(0,dataToDisplay);
         returnList.add(1,typesOfDataToDisplay);
