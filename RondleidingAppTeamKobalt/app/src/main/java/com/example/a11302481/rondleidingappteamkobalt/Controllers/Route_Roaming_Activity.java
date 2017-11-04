@@ -4,24 +4,24 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.example.a11302481.rondleidingappteamkobalt.R;
 
 public class Route_Roaming_Activity extends AppCompatActivity implements View.OnClickListener {
 
     private int major;
-    private Button roamingButton;
-    private Button routeButton;
+    private ImageButton roamingButton;
+    private ImageButton routeButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_route__roaming_);
+        setContentView(R.layout.activity_route_roaming_);
 
-        roamingButton=(Button) findViewById(R.id.roamingButton);
+        roamingButton=(ImageButton) findViewById(R.id.roamingButton);
         roamingButton.setOnClickListener(this);
 
-        routeButton=(Button) findViewById(R.id.routeButton);
+        routeButton=(ImageButton) findViewById(R.id.routeButton);
         routeButton.setOnClickListener(this);
 
         //ophalen van de meegstuurde major uit de vorige activity
