@@ -1,42 +1,23 @@
 package com.example.a11302481.rondleidingappteamkobalt.Scanner;
 
-/**
- * Created by 11302481 on 13/10/2017.
- */
-import com.example.a11302481.rondleidingappteamkobalt.Models.Beacon;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanRecord;
 import android.bluetooth.le.ScanResult;
-import android.os.Build;
 import android.os.Handler;
-import android.support.annotation.RequiresApi;
+
+import com.example.a11302481.rondleidingappteamkobalt.Models.Beacon;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
- * BeaconScanner uses bluetooth to scan for beacons.
- * <p>
- * You can listen for detection, start of scanning
- * and stop of scanning by implementing the OnScanListener and adding it by using the method
- * setScanEventListener.
- * If you stop listening, unsubscribe by using the removeScanEventListener method.
- * <p>
- * You can start scanning for beacons using the Start method and stop scanning with the stop method
- * <p>
- * With the IsScanning method you can ask if the scanner is scanning.
+ * Created by Steffen on 17/10/2017.
  */
-@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+
 public class BeaconScanner {
 
-    /* ---------------------------------------------------------- */
-    /* ------------------------- FIELDS ------------------------- */
-    /* ---------------------------------------------------------- */
-
-    // List of listeners for changes
-    private List<OnScanListener> eventListeners = new ArrayList<>();
 
     // scanner to get bluetooth devices
     private BluetoothLeScanner scanner;
@@ -45,9 +26,45 @@ public class BeaconScanner {
     // boolean to indicate if adapter is scanning
     private boolean scanning;
     // instance to handle threading
-    private Handler handler;
 
-    private int majorToFind;
+
+
+    private int majorToFind,maxDistance=100;
+
+    private static List<Beacon> foundBeacons, beaconsTosSend;
+
+    public BeaconScanner(BluetoothAdapter adapter) {
+        // create instances of fields
+        foundBeacons=new ArrayList<>();
+        this.adapter = adapter;
+        majorToFind=-1;
+
+        // set scanner and handler
+        scanner = adapter.getBluetoothLeScanner();
+
+
+    }
+
+    public BeaconScanner(BluetoothAdapter adapter, int majorToFind, int maxDistance) {
+        // create instances of fields
+        foundBeacons=new ArrayList<>();
+        this.adapter = adapter;
+        this.majorToFind=majorToFind;
+        this.maxDistance=maxDistance;
+        // set scanner and handler
+        scanner = adapter.getBluetoothLeScanner();
+
+    }
+
+    public BeaconScanner(BluetoothAdapter adapter, int majorToFind) {
+        // create instances of fields
+        foundBeacons=new ArrayList<>();
+        this.adapter = adapter;
+        this.majorToFind=majorToFind;
+        // set scanner and handler
+        scanner = adapter.getBluetoothLeScanner();
+
+    }
 
     // callback when scanned
     private ScanCallback scanCallback =(
@@ -55,71 +72,105 @@ public class BeaconScanner {
                 @Override
                 public void onScanResult(final int callbackType, final ScanResult result) {
                     // create beacon from scan result (if result is no beacon, null is returned)
-                    final Beacon scannedBeacon = Beacon.createBeaconFromScanResult(result, majorToFind);
+                    //final Beacon scannedBeacon = Beacon.createBeaconFromScanResult(result, majorToFind);
+                    ScanRecord scanRecord = result.getScanRecord();
+                    if (scanRecord != null) {
+                        byte[] bytesScanRecord = result.getScanRecord().getBytes();
+                        int startByte;
+                        boolean isBeacon = false;
 
-                    if (scannedBeacon != null) {
-                        final Handler mHandler;
-                        mHandler = new Handler();
-                        new Thread(new Runnable(){
-                            @Override
-                            public void run () {
-                                mHandler.post(new Runnable() {
-                                    @Override
-                                    public void run () {
-                                        for (OnScanListener l : eventListeners) {
-                                            l.onBeaconFound(scannedBeacon);
-                                        }
-                                    }
-                                });
+                        for (startByte = 2; startByte <= 5; startByte++) {
+                            if (((int) bytesScanRecord[startByte + 2] & 0xff) == 0x02 && //Identifies an iBeacon
+                                    ((int) bytesScanRecord[startByte + 3] & 0xff) == 0x15) { //Identifies correct data length
+                                // It's a beacon!!
+                                isBeacon = true;
+                                break;
                             }
-                        }).start();
-                        /*handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                // notify each of the listeners
-                                for (OnScanListener l : eventListeners) {
-                                    l.onBeaconFound(scannedBeacon);
+                        }
+                        int minora = (bytesScanRecord[startByte + 22] & 0xff) * 0x100 + (bytesScanRecord[startByte + 23] & 0xff);
+
+                        if (isBeacon){
+                            int foundMajor=(bytesScanRecord[startByte + 20] & 0xff) * 0x100 + (bytesScanRecord[startByte + 21] & 0xff);
+                            boolean validBeacon;
+                            if(majorToFind==-1){
+                                validBeacon=true;
+                            }else{
+
+                                if(foundMajor==majorToFind){
+                                    validBeacon=true;
+                                }else{
+                                    validBeacon=false;
                                 }
                             }
-                        });*/
+
+                            if(validBeacon){
+
+                                // set bluetoothDevice
+                                //scannedBeacon.bluetoothDevice = result.getDevice();
+
+                                double rssi;
+                                int txPower,major, minor;
+                                // set rssi
+                                rssi = result.getRssi();
+                                // set power (sort of batterypower???)
+                                txPower = bytesScanRecord[startByte + 24];
+
+                                // major
+                                major = (bytesScanRecord[startByte + 20] & 0xff) * 0x100 + (bytesScanRecord[startByte + 21] & 0xff);
+                                // minor
+                                minor = (bytesScanRecord[startByte + 22] & 0xff) * 0x100 + (bytesScanRecord[startByte + 23] & 0xff);
+
+                                Beacon scannedBeacon = new Beacon(major, minor, rssi, txPower);
+                                int teller=0;
+                                boolean notReplaced=true;
+                                if(scannedBeacon.getAccuracy()<maxDistance) {
+                                    if (foundBeacons != null) {
+                                        for (Beacon b : foundBeacons) {
+                                            if ((b.getMajor() == major) && (b.getMinor() == minor)) {
+                                                if (b.getAccuracy() > scannedBeacon.getAccuracy()) {
+                                                    foundBeacons.set(teller,scannedBeacon);
+                                                }
+                                                notReplaced = false;
+                                            }
+                                            teller++;
+                                        }
+                                        if (notReplaced) {
+                                            foundBeacons.add(scannedBeacon);
+                                        }
+                                    } else {
+                                        foundBeacons = new ArrayList<>();
+                                        foundBeacons.add(scannedBeacon);
+                                    }
+                                }
+
+                            }
+
+                        }
                     }
+
                 }
             });
 
 
 
-    /* --------------------------------------------------------------- */
-    /* ------------------------- CONSTRUCTOR ------------------------- */
-    /* --------------------------------------------------------------- */
+    public List getFoundBeacons(){
+
+        beaconsTosSend=foundBeacons;
+
+        if(beaconsTosSend==null){
+            List<Integer> none=new ArrayList<Integer>();
+            none.add(0);
+            return none;
+        }else{
+            foundBeacons=null;
+            return beaconsTosSend;
+        }
 
 
-    /**
-     * Constructor to construct a BeaconScanner instance.
-     *
-     * @param adapter BluetoothAdapter to get the scanner from
-     */
-    public BeaconScanner(BluetoothAdapter adapter) {
-        // create instances of fields
-        this.adapter = adapter;
-        majorToFind=-1;
-
-        // set scanner and handler
-        scanner = adapter.getBluetoothLeScanner();
-        handler = new Handler();
     }
 
-    public BeaconScanner(BluetoothAdapter adapter, int majorToFind) {
-        // create instances of fields
-        this.adapter = adapter;
-        this.majorToFind=majorToFind;
-        // set scanner and handler
-        scanner = adapter.getBluetoothLeScanner();
-        handler = new Handler();
-    }
 
-    /* ----------------------------------------------------------- */
-    /* ------------------------- METHODS ------------------------- */
-    /* ----------------------------------------------------------- */
+
 
     /**
      * Starts the scanner.
@@ -138,11 +189,6 @@ public class BeaconScanner {
         scanning = true;
         scanner.startScan(scanCallback);
 
-        // notify listeners
-        for (OnScanListener l : eventListeners) {
-            l.onScanStarted();
-        }
-
         return true;
     }
 
@@ -155,33 +201,6 @@ public class BeaconScanner {
         scanning = false;
         scanner.stopScan(scanCallback);
 
-        // notify listeners
-        for (OnScanListener l : eventListeners) {
-            l.onScanStopped();
-        }
-    }
-
-    /**
-     * Adds l to the listener list
-     *
-     * @param l listener to add to the listener list
-     */
-    public void setScanEventListener(OnScanListener l) {
-        // add l to the listeners
-        eventListeners.add(l);
-    }
-
-    /**
-     * Removes l to the listener list
-     *
-     * @param l listener to remove from the listener list
-     */
-    public void removeScanEventListener(OnScanListener l) {
-        // check if listeners contains l
-        if (eventListeners.contains(l)) {
-            // remove l from the listeners
-            eventListeners.remove(l);
-        }
     }
 
     /* ------------------------- GETTERS ------------------------- */

@@ -28,14 +28,15 @@
             </intent-filter>
         </activity>
         <activity android:name=".Controllers.MainActivity"
-                  android:configChanges="orientation|screenSize"/>
+            android:configChanges="orientation|screenSize"/>
         <activity android:name=".Controllers.SearchingActivity"
-                  android:configChanges="orientation|screenSize"/>
+            android:configChanges="orientation|screenSize"/>
         <activity android:name=".Controllers.BeaconFoundActivity"
-                  android:configChanges="orientation|screenSize"/>
+            android:configChanges="orientation|screenSize"/>
         <activity android:name=".Controllers.Route_Roaming_Activity" />
         <activity android:name=".Controllers.RouteChoiceActivity"></activity>
-        <activity android:name=".Controllers.YouTube_Activity"></activity>
+        <activity android:name=".Controllers.YouTube_Activity"
+            android:configChanges="orientation|screenSize"></activity>
     </application>
 
 </manifest>

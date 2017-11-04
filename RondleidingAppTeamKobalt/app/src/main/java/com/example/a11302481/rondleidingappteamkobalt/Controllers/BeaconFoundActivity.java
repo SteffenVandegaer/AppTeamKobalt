@@ -23,12 +23,11 @@ import android.widget.Toast;
 import com.example.a11302481.rondleidingappteamkobalt.Models.Beacon;
 import com.example.a11302481.rondleidingappteamkobalt.Models.RetrieveData;
 import com.example.a11302481.rondleidingappteamkobalt.R;
-import com.example.a11302481.rondleidingappteamkobalt.Scanner.BeaconScannerStVdg;
+import com.example.a11302481.rondleidingappteamkobalt.Scanner.BeaconScanner;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 
 import org.json.JSONException;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +46,7 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
     private static boolean youtubeLastContent=false;
 
     private BluetoothAdapter btAdapter;
-    private BeaconScannerStVdg beaconScanner;
+    private BeaconScanner beaconScanner;
     private int major=0, minor=0;
     private boolean searching;
 
@@ -105,7 +104,7 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
         }
 
         btAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
-        beaconScanner=new BeaconScannerStVdg(btAdapter,major);
+        beaconScanner=new BeaconScanner(btAdapter,major);
 
         timerHandler.postDelayed(timerRunnable, 0);
         searching=true;

@@ -126,11 +126,12 @@ public class RetrieveData {
 
         //data verkrijgen.
         JSONArray jA = staticData.getData();
-        while(jA==null){
+        long tStart = System.currentTimeMillis();
+        while(jA==null&&((System.currentTimeMillis()-tStart)/1000<3)){
             jA = staticData.getData();
         }
 
-        if (jA.length() == 0){
+        if (jA == null){
 
             title = "Geen content";
             text = "Deze beacon bevat nog geen content";

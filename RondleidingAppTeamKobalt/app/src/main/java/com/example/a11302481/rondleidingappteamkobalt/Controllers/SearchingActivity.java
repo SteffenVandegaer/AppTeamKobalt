@@ -20,7 +20,7 @@ import android.widget.Toast;
 
 import com.example.a11302481.rondleidingappteamkobalt.Models.RetrieveData;
 import com.example.a11302481.rondleidingappteamkobalt.Models.Beacon;
-import com.example.a11302481.rondleidingappteamkobalt.Scanner.BeaconScannerStVdg;
+import com.example.a11302481.rondleidingappteamkobalt.Scanner.BeaconScanner;
 import com.example.a11302481.rondleidingappteamkobalt.R;
 
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class SearchingActivity extends AppCompatActivity{
 
     private TextView testTextView;
 
-    private BeaconScannerStVdg beaconScanner;
+    private BeaconScanner beaconScanner;
     private Beacon nearestBeacon;
     private boolean searching=true;
 
@@ -88,7 +88,7 @@ public class SearchingActivity extends AppCompatActivity{
 
         BluetoothAdapter btAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
         btAdapter.enable();
-        beaconScanner=new BeaconScannerStVdg(btAdapter,majorToFind,5);
+        beaconScanner=new BeaconScanner(btAdapter,majorToFind,5);
         //beaconScanner.setScanEventListener(this);
 
 
