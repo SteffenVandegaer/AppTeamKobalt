@@ -75,6 +75,10 @@ public class SearchingActivity extends AppCompatActivity{
         Intent intent = getIntent();
         majorToFind = intent.getIntExtra("major",majorToFind);
         previousMinor=intent.getIntExtra("previousMinor",previousMinor);
+        List previousMinorItem=new ArrayList();
+        previousMinorItem.add(0,previousMinor);
+        previousMinorItem.add(1,0);
+        previousMinors.add(previousMinorItem);
         testTextView=(TextView) findViewById(R.id.testTextview);
 
         startTime = System.currentTimeMillis();
@@ -160,11 +164,6 @@ public class SearchingActivity extends AppCompatActivity{
             long millis = System.currentTimeMillis() - startTime;
             seconds = (int) (millis / 1000);
 
-            /*if((seconds>5)&&(teller>0)&&(teller<5)){
-                teller=6;
-                timerHandler.removeCallbacks(timerRunnable);
-                beaconFound();
-            }*/
             int teller=0;
             List<Object> indexesToDelete=new ArrayList<>();
             String test= "";
@@ -176,10 +175,10 @@ public class SearchingActivity extends AppCompatActivity{
                         if (i.get(1) >= 10) {
                             indexesToDelete.add(O);
                         } else {
-                            List previousMinor=new ArrayList();
-                            previousMinor.add(0,nearestBeacon.getMinor());
-                            previousMinor.add(1,i.get(1) + 1);
-                            previousMinors.set(teller, previousMinor);
+                                List previousMinor = new ArrayList();
+                                previousMinor.add(0, i.get(0));
+                                previousMinor.add(1, i.get(1) + 1);
+                                previousMinors.set(teller, previousMinor);
                         }
                         test+=i.get(0)+" ,";
                         teller++;
@@ -220,6 +219,10 @@ public class SearchingActivity extends AppCompatActivity{
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
+                        List previousMinorItem=new ArrayList();
+                        previousMinorItem.add(0,nearestBeacon.getMinor());
+                        previousMinorItem.add(1,0);
+                        previousMinors.add(previousMinorItem);
                         reset();
                         break;
                 }

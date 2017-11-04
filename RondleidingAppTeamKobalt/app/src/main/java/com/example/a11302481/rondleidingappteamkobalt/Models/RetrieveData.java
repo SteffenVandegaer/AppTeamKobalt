@@ -127,7 +127,7 @@ public class RetrieveData {
         //data verkrijgen.
         JSONArray jA = staticData.getData();
         long tStart = System.currentTimeMillis();
-        while(jA==null&&((System.currentTimeMillis()-tStart)/1000<3)){
+        while(jA==null&&((System.currentTimeMillis()-tStart)/1000<2)){
             jA = staticData.getData();
         }
 
@@ -215,5 +215,63 @@ public class RetrieveData {
                 break;
         }
         return Name;
+    }
+
+    public List getRoutesWithBeacon(int major, int minor){
+        /*todo
+        * connectie met api om routes op te halen.*/
+        List RoutesLijst;
+        List RouteDetails;
+        RoutesLijst=new ArrayList<>();
+
+        switch(minor){
+            case 11559:
+                RouteDetails=new ArrayList<>();
+                RouteDetails.add(0,"test route");
+                RouteDetails.add(1,"test route bij informatiepunt 11559");
+                RouteDetails.add(2,"inpikken in de route");
+                RoutesLijst.add(RouteDetails);
+                RouteDetails=new ArrayList<>();
+                RouteDetails.add(0,"test route 1");
+                RouteDetails.add(1,"test route 3 bij informatiepunt 11559");
+                RouteDetails.add(2,"inpikken in de route");
+                RoutesLijst.add(RouteDetails);
+                RouteDetails=new ArrayList<>();
+                RouteDetails.add(0,"test route 2");
+                RouteDetails.add(1,"test route 3 bij informatiepunt 11559");
+                RouteDetails.add(2,"inpikken in de route");
+                RoutesLijst.add(RouteDetails);
+                RouteDetails=new ArrayList<>();
+                RouteDetails.add(0,"test route 3");
+                RouteDetails.add(1,"test route 3 bij informatiepunt 11559");
+                RouteDetails.add(2,"");
+                RoutesLijst.add(RouteDetails);
+                break;
+            case 59394:
+                RouteDetails=new ArrayList<>();
+                RouteDetails.add(0,"test route 1");
+                RouteDetails.add(1,"test route 3 bij informatiepunt 59394");
+                RouteDetails.add(2,"");
+                RoutesLijst.add(RouteDetails);
+                RouteDetails=new ArrayList<>();
+                RouteDetails.add(0,"test route 2");
+                RouteDetails.add(1,"test route 3 bij informatiepunt 59394");
+                RouteDetails.add(2,"inpikken in de route");
+                RoutesLijst.add(RouteDetails);
+                RouteDetails=new ArrayList<>();
+                RouteDetails.add(0,"test route 3");
+                RouteDetails.add(1,"test route 3 bij informatiepunt 59394");
+                RouteDetails.add(2,"inpikken in de route");
+                RoutesLijst.add(RouteDetails);
+                break;
+            default:
+                RouteDetails=new ArrayList<>();
+                RouteDetails.add(0,"Geen routes gevonden");
+                RouteDetails.add(1,"Geen routes gevonden");
+                RouteDetails.add(2,"");
+                RoutesLijst.add(RouteDetails);
+
+        }
+        return RoutesLijst;
     }
 }

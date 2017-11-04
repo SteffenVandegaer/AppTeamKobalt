@@ -1,14 +1,146 @@
 package com.example.a11302481.rondleidingappteamkobalt.Controllers;
 
+import android.Manifest;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
+import android.widget.Toast;
+
+import com.example.a11302481.rondleidingappteamkobalt.Models.Beacon;
+import com.example.a11302481.rondleidingappteamkobalt.Models.RetrieveData;
+import com.example.a11302481.rondleidingappteamkobalt.R;
+import com.example.a11302481.rondleidingappteamkobalt.Scanner.BeaconScanner;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class RouteChoiceActivity extends AppCompatActivity {
+
+    private BeaconScanner beaconScanner;
+    private RetrieveData dataSource;
+    private final static String TAG = MainActivity.class.getSimpleName();
+    private BluetoothAdapter btAdapter;
+    private boolean searching;
+    private Beacon nearestBeacon;
+    private long tStart;
+    private List routes;
+    private ListView itemsListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //todo keuzelijst met alle routes in de gekozen campus
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_route_choice);
+        setContentView(R.layout.route_searching);
+        routes=new ArrayList<>();
+        dataSource=new RetrieveData();
+        // check for needed permissions and if they are granted, move on
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Logging
+            Log.w(TAG, "Location access not granted!");
+            // If not granted ask for permission
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 42);
+        }
+
+        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+            // show toast
+            Toast.makeText(getApplicationContext(), "BLE not supported", Toast.LENGTH_SHORT).show();
+
+            // end app
+            finish();
+        }
+
+        btAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
+        beaconScanner=new BeaconScanner(btAdapter);
+        tStart = System.currentTimeMillis();
+        timerHandler.postDelayed(timerRunnable, 0);
+        searching=true;
+        startScan();
+
+    }
+
+    Handler timerHandler = new Handler();
+    Runnable timerRunnable = new Runnable() {
+
+        /**
+         *
+         * runs without a timer by reposting this handler at the end of the runnable.
+         * If the timer is ended and there is an beacon, the beaconfound function is activated.
+         *
+         */
+        @Override
+        public void run() {
+        if(searching){
+            List beaconLijst=beaconScanner.getFoundBeacons();
+            if(!beaconLijst.isEmpty()){
+                if(beaconLijst.get(0) instanceof Integer){
+
+                }else {
+                    for (Object o : beaconLijst) {
+                        Beacon foundBeacon = ((Beacon) o);
+                        if (nearestBeacon == null) {
+                            nearestBeacon = foundBeacon;
+                        } else {
+                            if (nearestBeacon.getAccuracy() > foundBeacon.getAccuracy()) {
+                                nearestBeacon = foundBeacon;
+                            }
+                        }
+                    }
+                }
+            }
+            if(nearestBeacon!=null){
+                if((System.currentTimeMillis()-tStart)/1000>5){
+                    routes=dataSource.getRoutesWithBeacon(nearestBeacon.getMajor(),nearestBeacon.getMinor());
+                    displayRoutes();
+                }
+            }
+        }
+
+        timerHandler.postDelayed(this, 500);
+        }
+    };
+
+    private void displayRoutes(){
+        setContentView(R.layout.route_choice);
+        int resource = R.layout.listview_item;
+        ArrayList<HashMap<String, String>> data =
+                new ArrayList<HashMap<String, String>>();
+        for (Object item : routes) {
+            HashMap<String, String> map = new HashMap<String, String>();
+            map.put("title", ((List<String>)item).get(0));
+            map.put("description", ((List<String>)item).get(1));
+            map.put("progress", ((List<String>)item).get(2));
+            data.add(map);
+        }
+        String[] from = {"title", "description", "progress"};
+        int[] to = {R.id.routeNaamTextView, R.id.routeBeschrijvingTextView, R.id.positieRouteTextView};
+
+        SimpleAdapter adapter =
+                new SimpleAdapter(this, data, resource, from, to);
+        itemsListView=(ListView) findViewById(R.id.itemsListView);
+        itemsListView.setAdapter(adapter);
+    }
+
+    /**
+     * Starts the scanner.
+     */
+    private void startScan(){
+        beaconScanner.start();
+    }
+
+    /**
+     * Stops the scanner.
+     */
+    private void stopScan(){
+        beaconScanner.stop();
     }
 }

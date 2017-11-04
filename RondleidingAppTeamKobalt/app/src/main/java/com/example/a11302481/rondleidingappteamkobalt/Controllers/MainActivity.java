@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //major per campus toewijzen aan de hand van de gemaakte keuze in spinnen (zal later met data uit de database vervangen worden)
 
             //starten van nieuwe activity en het doorgeven van de gewenste major aan de nieuwe activity
-            Intent intent = new Intent(this, SearchingActivity.class);
+            Intent intent = new Intent(this, Route_Roaming_Activity.class);
             intent.putExtra("major", major);// if its int type
 
             stopScan();
