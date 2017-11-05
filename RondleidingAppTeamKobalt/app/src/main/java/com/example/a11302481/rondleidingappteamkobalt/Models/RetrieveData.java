@@ -189,6 +189,12 @@ public class RetrieveData {
                     //typesOfDataToDisplay.add(1,"image");
 
                     //break;
+                    default:
+                        title = (String) jO.get("title_sn");
+                        text = (String) jO.get("content_txt");
+                        dataToDisplay.add(i, text);
+                        typesOfDataToDisplay.add(i, "text");
+                        titleOfData.add(i, title);
 
                 }
             }
