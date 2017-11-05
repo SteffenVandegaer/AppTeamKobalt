@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,9 +38,9 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
     private List typesOfDataToDisplay;
     private List titleOfData;
     private int currentIndex=0;
-    private Button nextButton;
-    private Button previousButton;
-    private Button closeButton;
+    private ImageButton nextButton;
+    private ImageButton previousButton;
+    private ImageButton closeButton;
     private TextView titelTextView;
     private static final String TAG="BeaconFoundActivity";
     private RetrieveData dataSource;
@@ -82,9 +83,9 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        nextButton=(Button) findViewById(R.id.nextButton);
-        previousButton=(Button) findViewById(R.id.previousButton);
-        closeButton=(Button) findViewById(R.id.closeButton);
+        nextButton=(ImageButton) findViewById(R.id.nextButton);
+        previousButton=(ImageButton) findViewById(R.id.previousButton);
+        closeButton=(ImageButton) findViewById(R.id.closeButton);
 
 
         // check for needed permissions and if they are granted, move on
@@ -206,9 +207,9 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
      */
     private void checkButtons(){
         //buttons enablen en disablen zodat de index niet out of bounds kan gaan
-        nextButton=(Button) findViewById(R.id.nextButton);
-        previousButton=(Button) findViewById(R.id.previousButton);
-        closeButton=(Button) findViewById(R.id.closeButton);
+        nextButton=(ImageButton) findViewById(R.id.nextButton);
+        previousButton=(ImageButton) findViewById(R.id.previousButton);
+        closeButton=(ImageButton) findViewById(R.id.closeButton);
         previousButton.setOnClickListener(this);
         nextButton.setOnClickListener(this);
         closeButton.setOnClickListener(this);

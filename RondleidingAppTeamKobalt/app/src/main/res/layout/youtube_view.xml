@@ -6,41 +6,46 @@
     android:layout_height="match_parent"
     android:id="@+id/parent_constraint_layout">
 
-    <Button
+    <ImageButton
+        android:src="@drawable/previous"
         android:id="@+id/previousButton"
         android:layout_width="140dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
-        android:text="@string/previous"
-        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginStart="8dp" />
+        android:layout_marginStart="8dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside"
+        />
 
-    <Button
+    <ImageButton
+        android:src="@drawable/next"
         android:id="@+id/nextButton"
         android:layout_width="140dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginBottom="8dp"
         android:layout_marginRight="8dp"
-        android:text="@string/next"
-        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginEnd="8dp" />
-
-    <Button
+        android:layout_marginEnd="8dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside"
+        />
+    <ImageButton
+        android:src="@drawable/end"
         android:id="@+id/closeButton"
         android:layout_width="140dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginBottom="8dp"
         android:layout_marginRight="8dp"
-        android:text="X"
-        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginEnd="8dp" />
+        android:layout_marginEnd="8dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside"
+        />
 
     <TextView
         android:id="@+id/titelTextView"
@@ -68,4 +73,5 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titelTextView"></com.google.android.youtube.player.YouTubePlayerView>
+
 </android.support.constraint.ConstraintLayout>

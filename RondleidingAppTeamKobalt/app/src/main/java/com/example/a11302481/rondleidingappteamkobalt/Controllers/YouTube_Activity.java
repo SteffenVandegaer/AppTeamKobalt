@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,9 +25,9 @@ public class YouTube_Activity extends YouTubeBaseActivity implements View.OnClic
     private static YouTubePlayer.OnInitializedListener onInitializedListener;
     private static String KEY = "AIzaSyAMtPCSxzJk0i9ErDbZySSZW_gP7wscoc4";
     private TextView titelTextView;
-    private Button nextButton;
-    private Button previousButton;
-    private Button closeButton;
+    private ImageButton nextButton;
+    private ImageButton previousButton;
+    private ImageButton closeButton;
     private int currentIndex,maxIndex,major,minor;
 
     @Override
@@ -66,9 +67,9 @@ public class YouTube_Activity extends YouTubeBaseActivity implements View.OnClic
 
     private void checkButtons(){
         //buttons enablen en disablen zodat de index niet out of bounds kan gaan
-        nextButton=(Button) findViewById(R.id.nextButton);
-        previousButton=(Button) findViewById(R.id.previousButton);
-        closeButton=(Button) findViewById(R.id.closeButton);
+        nextButton=(ImageButton) findViewById(R.id.nextButton);
+        previousButton=(ImageButton) findViewById(R.id.previousButton);
+        closeButton=(ImageButton) findViewById(R.id.closeButton);
         previousButton.setOnClickListener(this);
         nextButton.setOnClickListener(this);
         closeButton.setOnClickListener(this);
