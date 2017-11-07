@@ -131,7 +131,7 @@ public class RetrieveData {
             jA = beaconData.getData();
         }
 
-        if (jA == null){
+        if (jA == null || jA.length()==0){
 
             title = "Geen content";
             text = "Deze beacon bevat nog geen content";
@@ -268,7 +268,12 @@ public class RetrieveData {
                 RouteDetails=new ArrayList<>();
                 RouteDetails.add(0,jO.get("route_id"));
                 RouteDetails.add(1,(String) jO.get("name_ln"));
-                RouteDetails.add(2,"");
+                if((Integer)jO.get("sequence_number_ind")==1){
+                    RouteDetails.add(2,"");
+                }else{
+                    RouteDetails.add(2,"inpikken in route bij informatiepunt "+(Integer)jO.get("sequence_number_ind"));
+                }
+
                 RoutesLijst.add(RouteDetails);
 
             }

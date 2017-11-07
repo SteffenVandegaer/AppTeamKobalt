@@ -27,5 +27,5 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:text="Beginpunt of niet"
-        android:textColor="@android:color/holo_green_dark" />
+        android:textColor="@android:color/holo_red_dark" />
 </LinearLayout>
