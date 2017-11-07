@@ -14,13 +14,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * Created by jensie on 15-10-2017.
- *
- * Deze klasse verkrijgt al de statische data van een beacon.
+ * Created by 11302481 on 6/11/2017.
  */
 
-public class staticData extends AsyncTask<Object, Object, JSONArray> {
-
+public class routeBeaconData extends AsyncTask<Object, Object, JSONArray> {
     //bevat de data.
     private String data = "";
     int minor = 0,major;
@@ -35,7 +32,7 @@ public class staticData extends AsyncTask<Object, Object, JSONArray> {
             URL retrievedLink = link.verkrijgLink();
 
             //link aanvullen.
-            URL fullLink = new URL( retrievedLink + "public/api/v1/GET/beacon/"+major+"/staticData/" + minor );
+            URL fullLink = new URL( retrievedLink + "public/api/v1/GET/beacon/" +major+ '/' + minor +"/route" );
             //Connectie openen (starten).
             HttpURLConnection connection = (HttpURLConnection) fullLink.openConnection();
 

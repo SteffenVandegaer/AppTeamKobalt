@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,7 +16,6 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -44,7 +44,6 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
     private TextView titelTextView;
     private static final String TAG="BeaconFoundActivity";
     private RetrieveData dataSource;
-    private static boolean youtubeLastContent=false;
 
     private BluetoothAdapter btAdapter;
     private BeaconScanner beaconScanner;
@@ -161,10 +160,9 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
             case "image":
                 setContentView(R.layout.image_view);
                 checkButtons();
-
                 ImageView imageToDisplayImageView;
                 imageToDisplayImageView=(ImageView) findViewById(R.id.imageToDisplayImageView);
-                imageToDisplayImageView.setImageResource((Integer)dataToDisplay.get(index));
+                imageToDisplayImageView.setImageBitmap((Bitmap)dataToDisplay.get(index));
                 titelTextView=(TextView) findViewById(R.id.titelTextView);
                 titelTextView.setText((String)titleOfData.get(index));
                 break;
@@ -194,7 +192,6 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
                 i.putExtra("data",(String)dataToDisplay.get(index));
                 startActivity(i);
                 finish();
-
                 break;
         }
 

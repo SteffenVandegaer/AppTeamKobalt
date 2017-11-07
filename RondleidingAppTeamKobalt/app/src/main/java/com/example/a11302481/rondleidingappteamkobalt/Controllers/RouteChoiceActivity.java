@@ -4,6 +4,7 @@ import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
@@ -20,6 +21,8 @@ import com.example.a11302481.rondleidingappteamkobalt.Models.RetrieveData;
 import com.example.a11302481.rondleidingappteamkobalt.R;
 import com.example.a11302481.rondleidingappteamkobalt.Scanner.BeaconScanner;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +38,7 @@ public class RouteChoiceActivity extends AppCompatActivity {
     private long tStart;
     private List routes;
     private ListView itemsListView;
+    private int major=-1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +63,11 @@ public class RouteChoiceActivity extends AppCompatActivity {
             finish();
         }
 
+        Intent intent = getIntent();
+        major = intent.getIntExtra("major",major);
+
         btAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
-        beaconScanner=new BeaconScanner(btAdapter);
+        beaconScanner=new BeaconScanner(btAdapter,major);
         tStart = System.currentTimeMillis();
         timerHandler.postDelayed(timerRunnable, 0);
         searching=true;
@@ -99,7 +106,11 @@ public class RouteChoiceActivity extends AppCompatActivity {
             }
             if(nearestBeacon!=null){
                 if((System.currentTimeMillis()-tStart)/1000>5){
-                    routes=dataSource.getRoutesWithBeacon(nearestBeacon.getMajor(),nearestBeacon.getMinor());
+                    try {
+                        routes=dataSource.getRoutesWithBeacon(nearestBeacon.getMajor(),nearestBeacon.getMinor());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     displayRoutes();
                 }
             }
@@ -142,5 +153,23 @@ public class RouteChoiceActivity extends AppCompatActivity {
      */
     private void stopScan(){
         beaconScanner.stop();
+    }
+
+    public void closeFunction(){
+        timerHandler.removeCallbacksAndMessages(null);
+        stopScan();
+        Intent intent = new Intent(this, Route_Roaming_Activity.class);
+        intent.putExtra("major", major);
+        startActivity(intent);
+        finish();
+    }
+
+    /**
+     *
+     * If back button is pressed the close function is called.
+     *
+     */
+    public void onBackPressed(){
+        closeFunction();
     }
 }

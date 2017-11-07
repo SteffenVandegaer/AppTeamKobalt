@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             intent.putExtra("major", major);// if its int type
 
             stopScan();
-
+            timerHandler.removeCallbacksAndMessages(null);
 
             startActivity(intent);
         }else{

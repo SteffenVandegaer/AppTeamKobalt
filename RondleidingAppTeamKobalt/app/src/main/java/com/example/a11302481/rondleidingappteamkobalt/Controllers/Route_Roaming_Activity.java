@@ -39,11 +39,13 @@ public class Route_Roaming_Activity extends AppCompatActivity implements View.On
                 intent = new Intent(this, SearchingActivity.class);
                 intent.putExtra("major", major);
                 startActivity(intent);
+                finish();
                 break;
             case R.id.routeButton:
                 intent = new Intent(this, RouteChoiceActivity.class);
                 intent.putExtra("major", major);
                 startActivity(intent);
+                finish();
                 break;
         }
 

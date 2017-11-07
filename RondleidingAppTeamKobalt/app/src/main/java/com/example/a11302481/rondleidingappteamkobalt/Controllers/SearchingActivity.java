@@ -93,10 +93,7 @@ public class SearchingActivity extends AppCompatActivity{
         BluetoothAdapter btAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
         btAdapter.enable();
         beaconScanner=new BeaconScanner(btAdapter,majorToFind,5);
-        //beaconScanner.setScanEventListener(this);
 
-
-        //savedValues=getSharedPreferences("SavedValues",MODE_PRIVATE);
     }
 
 
@@ -114,6 +111,7 @@ public class SearchingActivity extends AppCompatActivity{
          */
         @Override
         public void run() {
+            //timerHandler.removeCallbacksAndMessages(null);
             if(searching){
                 List beaconLijst=beaconScanner.getFoundBeacons();
                 if(!beaconLijst.isEmpty()){
@@ -126,7 +124,7 @@ public class SearchingActivity extends AppCompatActivity{
                             if(nearestBeacon==null){
                                 nearestBeacon=foundBeacon;
                             }else{
-                                if(previousMinors.size()>0){
+                                if(previousMinors.size()>=1){
                                     for(Object O:previousMinors){
                                         List<Integer> i = ((List<Integer>) O);
                                         if(foundBeacon.getMinor()!=i.get(0)){
@@ -138,6 +136,7 @@ public class SearchingActivity extends AppCompatActivity{
                                                 previousMinor.add(1,0);
                                                 previousMinors.add(previousMinor);
                                                 beaconFound();
+                                                break;
                                             }
                                         }
                                     }
@@ -157,8 +156,8 @@ public class SearchingActivity extends AppCompatActivity{
 
                     }
                 }
+                //timerHandler.postDelayed(timerRunnable, 0);
             }
-
 
 
             long millis = System.currentTimeMillis() - startTime;
@@ -175,10 +174,10 @@ public class SearchingActivity extends AppCompatActivity{
                         if (i.get(1) >= 10) {
                             indexesToDelete.add(O);
                         } else {
-                                List previousMinor = new ArrayList();
-                                previousMinor.add(0, i.get(0));
-                                previousMinor.add(1, i.get(1) + 1);
-                                previousMinors.set(teller, previousMinor);
+                            List previousMinor = new ArrayList();
+                            previousMinor.add(0, i.get(0));
+                            previousMinor.add(1, i.get(1) + 1);
+                            previousMinors.set(teller, previousMinor);
                         }
                         test+=i.get(0)+" ,";
                         teller++;
@@ -191,9 +190,10 @@ public class SearchingActivity extends AppCompatActivity{
                         previousMinors.remove(indexesToDelete.get(i-1));
                     }
                 }
-            }
-            testTextView.setText(test);
+                testTextView.setText(test);
 
+
+            }
             timerHandler.postDelayed(this, 500);
         }
     };
@@ -206,7 +206,7 @@ public class SearchingActivity extends AppCompatActivity{
      *
      */
     private void beaconFound(){
-
+        searching=false;
         Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         // Vibrate for 500 milliseconds
         v.vibrate(500);
@@ -283,8 +283,8 @@ public class SearchingActivity extends AppCompatActivity{
      *
      */
     private void reset(){
-        searching=true;
         startTime=System.currentTimeMillis();
+        searching=true;
 
     }
 
@@ -329,6 +329,24 @@ public class SearchingActivity extends AppCompatActivity{
         beaconScanner.stop();
     }
 
+    public void closeFunction(){
+        previousMinors.clear();
+        timerHandler.removeCallbacksAndMessages(null);
+        stopScan();
+        Intent intent = new Intent(this, Route_Roaming_Activity.class);
+        intent.putExtra("major", majorToFind);
+        startActivity(intent);
+        finish();
+    }
+
+    /**
+     *
+     * If back button is pressed the close function is called.
+     *
+     */
+    public void onBackPressed(){
+        closeFunction();
+    }
 
 
 }

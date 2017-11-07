@@ -1,6 +1,6 @@
 package com.example.a11302481.rondleidingappteamkobalt.Models;
 
-import android.os.AsyncTask;
+import android.graphics.Bitmap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -108,27 +108,27 @@ public class RetrieveData {
         returnList=new ArrayList<>();
         titleOfData=new ArrayList<>();
 
-        int image;
+        Bitmap image;
         String text;
         String html, title;
         String youtube;
 
         //class instantie
-        staticData staticData = new staticData();
+        beaconData beaconData = new beaconData();
 
         //minor doorgeven zodat men specifieke data kan verkrijgen van een beacon.
-        staticData.setMinor(minor);
+        beaconData.setMinor(minor);
 
-        staticData.setMajor(major);
+        beaconData.setMajor(major);
 
         //uitvoeren van de klasse en data verkrijgen in de klasse zelf.
-        staticData.execute();
+        beaconData.execute();
 
         //data verkrijgen.
-        JSONArray jA = staticData.getData();
+        JSONArray jA = beaconData.getData();
         long tStart = System.currentTimeMillis();
         while(jA==null&&((System.currentTimeMillis()-tStart)/1000<2)){
-            jA = staticData.getData();
+            jA = beaconData.getData();
         }
 
         if (jA == null){
@@ -179,16 +179,14 @@ public class RetrieveData {
 
                         break;
 
-                    //case "image":
+                    case "image":
+                        title = (String) jO.get("title_sn");
+                        image = (Bitmap) jO.get("content_txt");
+                        dataToDisplay.add(i,image);
+                        typesOfDataToDisplay.add(i,"image");
+                        titleOfData.add(i, title);
 
-                    //image = getResources().getIdentifier("next", "drawable",  getPackageName());
-                    //dataToDisplay.add(0,image);
-                    //typesOfDataToDisplay.add(0,"image");
-                    //image = getResources().getIdentifier("previous", "drawable",  getPackageName());
-                    //dataToDisplay.add(1,image);
-                    //typesOfDataToDisplay.add(1,"image");
-
-                    //break;
+                        break;
                     default:
                         title = (String) jO.get("title_sn");
                         text = (String) jO.get("content_txt");
@@ -223,61 +221,60 @@ public class RetrieveData {
         return Name;
     }
 
-    public List getRoutesWithBeacon(int major, int minor){
+    public List getRoutesWithBeacon(int major, int minor) throws JSONException {
         /*todo
         * connectie met api om routes op te halen.*/
         List RoutesLijst;
         List RouteDetails;
+
         RoutesLijst=new ArrayList<>();
 
-        switch(minor){
-            case 11559:
+        //class instantie
+        routeBeaconData beaconData = new routeBeaconData();
+
+        //minor doorgeven zodat men specifieke data kan verkrijgen van een beacon.
+        beaconData.setMinor(minor);
+
+        beaconData.setMajor(major);
+
+        //uitvoeren van de klasse en data verkrijgen in de klasse zelf.
+        beaconData.execute();
+
+        //data verkrijgen.
+        JSONArray jA = beaconData.getData();
+        long tStart = System.currentTimeMillis();
+        while(jA==null&&((System.currentTimeMillis()-tStart)/1000<2)){
+            jA = beaconData.getData();
+        }
+
+        if (jA == null){
+            RouteDetails=new ArrayList<>();
+            RouteDetails.add(0,"Geen routes gevonden");
+            RouteDetails.add(1,"Geen routes gevonden");
+            RouteDetails.add(2,"");
+            RoutesLijst.add(RouteDetails);
+
+        }else{
+
+            //de volledige data over gaan
+            for(int i = 0; i < jA.length(); i++) {
+
+                //per object de gegevens door geven.
+                JSONObject jO = (JSONObject) jA.get(i);
+
+                //type aanvragen
+
+                //kijken welk type en doorgeven.
                 RouteDetails=new ArrayList<>();
-                RouteDetails.add(0,"test route");
-                RouteDetails.add(1,"test route bij informatiepunt 11559");
-                RouteDetails.add(2,"inpikken in de route");
-                RoutesLijst.add(RouteDetails);
-                RouteDetails=new ArrayList<>();
-                RouteDetails.add(0,"test route 1");
-                RouteDetails.add(1,"test route 3 bij informatiepunt 11559");
-                RouteDetails.add(2,"inpikken in de route");
-                RoutesLijst.add(RouteDetails);
-                RouteDetails=new ArrayList<>();
-                RouteDetails.add(0,"test route 2");
-                RouteDetails.add(1,"test route 3 bij informatiepunt 11559");
-                RouteDetails.add(2,"inpikken in de route");
-                RoutesLijst.add(RouteDetails);
-                RouteDetails=new ArrayList<>();
-                RouteDetails.add(0,"test route 3");
-                RouteDetails.add(1,"test route 3 bij informatiepunt 11559");
-                RouteDetails.add(2,"");
-                RoutesLijst.add(RouteDetails);
-                break;
-            case 59394:
-                RouteDetails=new ArrayList<>();
-                RouteDetails.add(0,"test route 1");
-                RouteDetails.add(1,"test route 3 bij informatiepunt 59394");
-                RouteDetails.add(2,"");
-                RoutesLijst.add(RouteDetails);
-                RouteDetails=new ArrayList<>();
-                RouteDetails.add(0,"test route 2");
-                RouteDetails.add(1,"test route 3 bij informatiepunt 59394");
-                RouteDetails.add(2,"inpikken in de route");
-                RoutesLijst.add(RouteDetails);
-                RouteDetails=new ArrayList<>();
-                RouteDetails.add(0,"test route 3");
-                RouteDetails.add(1,"test route 3 bij informatiepunt 59394");
-                RouteDetails.add(2,"inpikken in de route");
-                RoutesLijst.add(RouteDetails);
-                break;
-            default:
-                RouteDetails=new ArrayList<>();
-                RouteDetails.add(0,"Geen routes gevonden");
-                RouteDetails.add(1,"Geen routes gevonden");
+                RouteDetails.add(0,jO.get("route_id"));
+                RouteDetails.add(1,(String) jO.get("name_ln"));
                 RouteDetails.add(2,"");
                 RoutesLijst.add(RouteDetails);
 
+            }
+
         }
+
         return RoutesLijst;
     }
 }
