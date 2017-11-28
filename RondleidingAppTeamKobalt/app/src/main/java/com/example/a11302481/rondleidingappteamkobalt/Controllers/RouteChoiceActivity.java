@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.a11302481.rondleidingappteamkobalt.Models.Beacon;
 import com.example.a11302481.rondleidingappteamkobalt.Models.RetrieveData;
+import com.example.a11302481.rondleidingappteamkobalt.Models.Route;
 import com.example.a11302481.rondleidingappteamkobalt.R;
 import com.example.a11302481.rondleidingappteamkobalt.Scanner.BeaconScanner;
 
@@ -128,9 +130,9 @@ public class RouteChoiceActivity extends AppCompatActivity implements AdapterVie
                 new ArrayList<HashMap<String, String>>();
         for (Object item : routes) {
             HashMap<String, String> map = new HashMap<String, String>();
-            map.put("title", ((List<String>)item).get(0));
-            map.put("description", ((List<String>)item).get(1));
-            map.put("progress", ((List<String>)item).get(2));
+            map.put("title", ((Route)item).getName());
+            map.put("description", ((Route)item).getDescription());
+            map.put("progress", (((Route)item).getId())+"");
             data.add(map);
         }
         String[] from = {"title", "description", "progress"};
@@ -139,6 +141,7 @@ public class RouteChoiceActivity extends AppCompatActivity implements AdapterVie
         SimpleAdapter adapter =
                 new SimpleAdapter(this, data, resource, from, to);
         itemsListView=(ListView) findViewById(R.id.itemsListView);
+        itemsListView.setOnItemClickListener(this);
         itemsListView.setAdapter(adapter);
     }
 
@@ -176,6 +179,8 @@ public class RouteChoiceActivity extends AppCompatActivity implements AdapterVie
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+        Intent i =new Intent(this,RouteSelectedActivity.class);
+        i.putExtra("route", (Parcelable)routes.get(position));
+        startActivity(i);
     }
 }

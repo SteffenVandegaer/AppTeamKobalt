@@ -273,9 +273,8 @@ public class RetrieveData {
                 }else{
                     RouteDetails.add(2,"inpikken in route bij informatiepunt "+(Integer)jO.get("sequence_number_ind"));
                 }
-
-                RoutesLijst.add(RouteDetails);
-
+                Route route=new Route((String)RouteDetails.get(1),(int)RouteDetails.get(0),(String)RouteDetails.get(2));
+                RoutesLijst.add(route);
             }
 
         }

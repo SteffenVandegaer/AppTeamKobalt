@@ -2,16 +2,28 @@ package com.example.a11302481.rondleidingappteamkobalt.Models;
 
 import android.bluetooth.le.ScanRecord;
 import android.bluetooth.le.ScanResult;
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 /**
  * Created by 11302481 on 13/10/2017.
  */
 
-public class Beacon {
+public class Beacon implements Parcelable{
     private int minor,major;
     private double rssi, accuracy=100;
     private int txPower;
+
+    public Beacon(Parcel in) {
+        Bundle extra=in.readBundle();
+        minor=extra.getInt("minor");
+        major=extra.getInt("major");
+        rssi=extra.getDouble("rssi");
+        accuracy=extra.getDouble("accuracy");
+        txPower=extra.getInt("txPower");
+    }
 
     public static Beacon createBeaconFromScanResult(@NonNull final ScanResult result, int majorToFind) {
         // get the scan record
@@ -121,5 +133,31 @@ public class Beacon {
         }
 
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        Bundle extras = new Bundle();
+        extras.putInt("major", major);
+        extras.putInt("minor", minor);
+        extras.putDouble("rssi", rssi);
+        extras.putDouble("accuracy",accuracy);
+        extras.putInt("txPower",txPower);
+        dest.writeBundle(extras);
+    }
+
+    public static final Parcelable.Creator<Beacon> CREATOR = new Parcelable.Creator<Beacon>() {
+        public Beacon createFromParcel(Parcel in) {
+            return new Beacon(in);
+        }
+
+        public Beacon[] newArray(int size) {
+            return new Beacon[size];
+        }
+    };
 
 }

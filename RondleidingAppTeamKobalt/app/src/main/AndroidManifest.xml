@@ -2,14 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.a11302481.rondleidingappteamkobalt">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -27,17 +27,23 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Controllers.MainActivity"
-            android:configChanges="orientation|screenSize"/>
-        <activity android:name=".Controllers.SearchingActivity"
-            android:configChanges="orientation|screenSize"/>
-        <activity android:name=".Controllers.BeaconFoundActivity"
-            android:configChanges="orientation|screenSize"/>
-        <activity android:name=".Controllers.Route_Roaming_Activity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name=".Controllers.RouteChoiceActivity"></activity>
-        <activity android:name=".Controllers.YouTube_Activity"
-            android:configChanges="orientation|screenSize"></activity>
+        <activity
+            android:name=".Controllers.MainActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".Controllers.SearchingActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".Controllers.BeaconFoundActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".Controllers.Route_Roaming_Activity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".Controllers.RouteChoiceActivity" />
+        <activity
+            android:name=".Controllers.YouTube_Activity"
+            android:configChanges="orientation|screenSize" />
+        <activity android:name=".Controllers.RouteSelectedActivity"></activity>
     </application>
 
 </manifest>
