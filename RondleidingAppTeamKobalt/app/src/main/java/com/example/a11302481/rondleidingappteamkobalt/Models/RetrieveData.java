@@ -221,6 +221,20 @@ public class RetrieveData {
         return Name;
     }
 
+    private List getBeaconsInRoute(int routeID){
+        List beaconLijst;
+        beaconLijst=new ArrayList<>();
+        beaconLijst.add(10);
+        beaconLijst.add(11);
+        beaconLijst.add(12);
+        beaconLijst.add(13);
+        beaconLijst.add(14);
+        beaconLijst.add(15);
+        beaconLijst.add(16);
+        beaconLijst.add(17);
+        return beaconLijst;
+    }
+
     public List getRoutesWithBeacon(int major, int minor) throws JSONException {
         /*todo
         * connectie met api om routes op te halen.*/
@@ -252,7 +266,8 @@ public class RetrieveData {
             RouteDetails.add(0,"Geen routes gevonden");
             RouteDetails.add(1,"Geen routes gevonden");
             RouteDetails.add(2,"");
-            RoutesLijst.add(RouteDetails);
+            Route route=new Route((String)RouteDetails.get(1),0,(String)RouteDetails.get(2),0);
+            RoutesLijst.add(route);
 
         }else{
 
@@ -273,7 +288,8 @@ public class RetrieveData {
                 }else{
                     RouteDetails.add(2,"inpikken in route bij informatiepunt "+(Integer)jO.get("sequence_number_ind"));
                 }
-                Route route=new Route((String)RouteDetails.get(1),(int)RouteDetails.get(0),(String)RouteDetails.get(2));
+                Route route=new Route((String)RouteDetails.get(1),(int)RouteDetails.get(0),(String)RouteDetails.get(2),2);
+                route.setBeaconList(getBeaconsInRoute((int)RouteDetails.get(0)));
                 RoutesLijst.add(route);
             }
 

@@ -29,7 +29,7 @@ public class BeaconScanner {
 
 
 
-    private int majorToFind,maxDistance=100;
+    private int majorToFind,minorTofind=-1,maxDistance=100;
 
     private static List<Beacon> foundBeacons, beaconsTosSend;
 
@@ -51,6 +51,18 @@ public class BeaconScanner {
         this.adapter = adapter;
         this.majorToFind=majorToFind;
         this.maxDistance=maxDistance;
+        // set scanner and handler
+        scanner = adapter.getBluetoothLeScanner();
+
+    }
+
+    public BeaconScanner(BluetoothAdapter adapter, int majorToFind, int minorToFind, int maxDistance) {
+        // create instances of fields
+        foundBeacons=new ArrayList<>();
+        this.adapter = adapter;
+        this.majorToFind=majorToFind;
+        this.maxDistance=maxDistance;
+        this.minorTofind=minorToFind;
         // set scanner and handler
         scanner = adapter.getBluetoothLeScanner();
 
@@ -87,7 +99,7 @@ public class BeaconScanner {
                                 break;
                             }
                         }
-                        int minora = (bytesScanRecord[startByte + 22] & 0xff) * 0x100 + (bytesScanRecord[startByte + 23] & 0xff);
+                        int foundMinor = (bytesScanRecord[startByte + 22] & 0xff) * 0x100 + (bytesScanRecord[startByte + 23] & 0xff);
 
                         if (isBeacon){
                             int foundMajor=(bytesScanRecord[startByte + 20] & 0xff) * 0x100 + (bytesScanRecord[startByte + 21] & 0xff);
@@ -97,7 +109,16 @@ public class BeaconScanner {
                             }else{
 
                                 if(foundMajor==majorToFind){
-                                    validBeacon=true;
+                                    if(minorTofind==-1){
+                                        validBeacon=true;
+                                    }else{
+                                        if(foundMinor==minorTofind){
+                                            validBeacon=true;
+                                        }else{
+                                            validBeacon=true;
+                                        }
+                                    }
+
                                 }else{
                                     validBeacon=false;
                                 }

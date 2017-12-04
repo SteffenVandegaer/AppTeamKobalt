@@ -9,6 +9,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.a11302481.rondleidingappteamkobalt.Models.Route;
 import com.example.a11302481.rondleidingappteamkobalt.R;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -28,6 +29,7 @@ public class YouTube_Activity extends YouTubeBaseActivity implements View.OnClic
     private ImageButton nextButton;
     private ImageButton previousButton;
     private ImageButton closeButton;
+    private Route route;
     private int currentIndex,maxIndex,major,minor;
 
     @Override
@@ -42,7 +44,7 @@ public class YouTube_Activity extends YouTubeBaseActivity implements View.OnClic
         maxIndex=intent.getIntExtra("max",1);
         major=intent.getIntExtra("major",0);
         minor=intent.getIntExtra("minor",0);
-
+        route=intent.getExtras().getParcelable("route");
         titelTextView=(TextView) findViewById(R.id.titelTextView);
         titelTextView.setText((String)titleOfData);
         //wanneer youtube moet geladen worden
@@ -110,6 +112,7 @@ public class YouTube_Activity extends YouTubeBaseActivity implements View.OnClic
         Intent intent =new Intent(this, BeaconFoundActivity.class);
         intent.putExtra("major",major);
         intent.putExtra("minor",minor);
+        intent.putExtra("route",route);
         intent.putExtra("currentIndex",currentIndex);
         startActivity(intent);
         finish();

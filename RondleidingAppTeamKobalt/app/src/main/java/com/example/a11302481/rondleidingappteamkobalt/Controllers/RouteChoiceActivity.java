@@ -46,7 +46,6 @@ public class RouteChoiceActivity extends AppCompatActivity implements AdapterVie
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //todo keuzelijst met alle routes in de gekozen campus
         super.onCreate(savedInstanceState);
         setContentView(R.layout.route_searching);
         routes=new ArrayList<>();
@@ -179,7 +178,8 @@ public class RouteChoiceActivity extends AppCompatActivity implements AdapterVie
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Intent i =new Intent(this,RouteSelectedActivity.class);
+        Intent i =new Intent(this,RouteSearchBeaconActivity.class);
+        i.putExtra("major",major);
         i.putExtra("route", (Parcelable)routes.get(position));
         startActivity(i);
     }

@@ -43,7 +43,8 @@
         <activity
             android:name=".Controllers.YouTube_Activity"
             android:configChanges="orientation|screenSize" />
-        <activity android:name=".Controllers.RouteSelectedActivity"></activity>
+        <activity android:name=".Controllers.RouteSearchBeaconActivity" />
+        <activity android:name=".Controllers.BeaconInRouteFoundActivity"></activity>
     </application>
 
 </manifest>

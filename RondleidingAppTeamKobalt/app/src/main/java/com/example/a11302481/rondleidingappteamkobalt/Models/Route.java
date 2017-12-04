@@ -15,12 +15,14 @@ public class Route implements Parcelable {
     private String routeName, routeDescription;
     private int routeId;
     private List beacons;
+    private int progress;
 
-    public Route(String Name, int id, String description){
+    public Route(String Name, int id, String description, int progress){
         routeName=Name;
         routeId=id;
         routeDescription=description;
         beacons=new ArrayList<>();
+        this.progress=progress;
     }
 
     private Route(Parcel in) {
@@ -28,11 +30,17 @@ public class Route implements Parcelable {
         routeName = data.getString("routeName");
         routeId=data.getInt("id");
         routeDescription=data.getString("routeDescription");
+        beacons=data.getParcelableArrayList("beacons");
+        progress=data.getInt("progress",0);
     }
 
     public int getId(){
         return routeId;
     }
+
+    public int getProgress(){return progress;}
+
+    public void setProgress(int progress){this.progress=progress;}
 
     public String getName(){
         return routeName;
@@ -42,16 +50,20 @@ public class Route implements Parcelable {
         return routeDescription;
     }
 
-    public void addBeacon(Beacon beacon){
-        beacons.add(beacon);
+    public void addBeaconMinor(int minor){
+        beacons.add(minor);
+    }
+
+    public void setBeaconList(List l){
+        beacons=l;
     }
 
     public int countBeacons(){
         return beacons.size();
     }
 
-    public Beacon getBeacon(int beaconId){
-        return (Beacon)beacons.get(beaconId);
+    public int getBeaconMinor(int beaconId){
+        return (int)beacons.get(beaconId);
     }
 
     @Override
@@ -63,8 +75,10 @@ public class Route implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         Bundle extras = new Bundle();
         extras.putInt("id", routeId);
+        extras.putInt("progress",progress);
         extras.putString("routeName", routeName);
         extras.putString("routeDescription", routeDescription);
+        extras.putParcelableArrayList("beacons",(ArrayList)beacons);
         dest.writeBundle(extras);
     }
 

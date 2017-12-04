@@ -98,13 +98,18 @@ public class Beacon implements Parcelable{
     }
     public Beacon(){}
 
-    public Beacon(int major, int minor, double rssi, int txPower){
-        this.major=major;
-        this.minor=minor;
-        this.rssi=rssi;
-        this.txPower=txPower;
+    public Beacon(int major, int minor, double rssi, int txPower) {
+        this.major = major;
+        this.minor = minor;
+        this.rssi = rssi;
+        this.txPower = txPower;
 
         calculateAccuracy();
+    }
+
+    public Beacon(int major, int minor) {
+        this.major = major;
+        this.minor = minor;
     }
 
     public int getMajor(){
