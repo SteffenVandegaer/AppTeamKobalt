@@ -14,14 +14,27 @@ import java.util.ArrayList;
  */
 
 public class RetrieveData {
-    public RetrieveData(){
-
+    private CampusModel campusModel;
+    public RetrieveData() {
+        campusModel = new CampusModel();
     }
 
     public String[] getAllCampi(){
-        String[] campusArray=new String[] {
-                "Clenardus","Comenius","Diepenbeek", "Gasthuisberg", "Hertogstraat", "LiZa", "Oude Luikerbaan", "Proximus", "Sociale School"
-        };
+        try{
+            campusModel.loadData();
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+
+        List campi=campusModel.getCampi();
+        String[] campusArray=new String[campi.size()];
+        int teller=0;
+        for (Object o:campi) {
+            Campus campus=(Campus)o;
+            campusArray[teller]=campus.getNaam();
+            teller++;
+        }
+
         return campusArray;
     }
 
