@@ -75,14 +75,15 @@ public class YouTube_Activity extends YouTubeBaseActivity implements View.OnClic
         previousButton.setOnClickListener(this);
         nextButton.setOnClickListener(this);
         closeButton.setOnClickListener(this);
-        previousButton.setVisibility(View.VISIBLE);
+        previousButton.setClickable(true);
+        previousButton.setAlpha(1f);
         nextButton.setVisibility(View.VISIBLE);
         closeButton.setVisibility(View.GONE);
 
 
         if(currentIndex==0){
-
-            previousButton.setVisibility(View.GONE);
+            previousButton.setAlpha(.5f);
+            previousButton.setClickable(false);
         }
         if((currentIndex+1)==maxIndex){
 
@@ -109,7 +110,13 @@ public class YouTube_Activity extends YouTubeBaseActivity implements View.OnClic
     }
 
     public void newScreen(){
-        Intent intent =new Intent(this, BeaconFoundActivity.class);
+        Intent intent;
+        if(route!=null){
+            intent =new Intent(this, BeaconInRouteFoundActivity.class);
+        }else{
+            intent =new Intent(this, BeaconFoundActivity.class);
+        }
+
         intent.putExtra("major",major);
         intent.putExtra("minor",minor);
         intent.putExtra("route",route);

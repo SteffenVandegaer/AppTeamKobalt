@@ -50,10 +50,6 @@ public class Route implements Parcelable {
         return routeDescription;
     }
 
-    public void addBeaconMinor(int minor){
-        beacons.add(minor);
-    }
-
     public void setBeaconList(List l){
         beacons=l;
     }

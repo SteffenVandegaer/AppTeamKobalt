@@ -43,11 +43,13 @@ public class RouteChoiceActivity extends AppCompatActivity implements AdapterVie
     private List routes;
     private ListView itemsListView;
     private int major=-1;
+    private List previousMinors;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.route_searching);
+        previousMinors=new ArrayList();
         routes=new ArrayList<>();
         dataSource=new RetrieveData();
         // check for needed permissions and if they are granted, move on
@@ -89,6 +91,8 @@ public class RouteChoiceActivity extends AppCompatActivity implements AdapterVie
          */
         @Override
         public void run() {
+        boolean change=false;
+        boolean newbeacon=true;
         if(searching){
             List beaconLijst=beaconScanner.getFoundBeacons();
             if(!beaconLijst.isEmpty()){
@@ -110,11 +114,36 @@ public class RouteChoiceActivity extends AppCompatActivity implements AdapterVie
             if(nearestBeacon!=null){
                 if((System.currentTimeMillis()-tStart)/1000>5){
                     try {
-                        routes=dataSource.getRoutesWithBeacon(nearestBeacon.getMajor(),nearestBeacon.getMinor());
-                    } catch (JSONException e) {
+                        for (Object i : previousMinors) {
+                            if (((int) i) == nearestBeacon.getMinor()) {
+                                newbeacon = false;
+                            }
+                        }
+                        if (newbeacon) {
+                            previousMinors.add(nearestBeacon.getMinor());
+                            List newRoutes = dataSource.getRoutesWithBeacon(nearestBeacon.getMajor(), nearestBeacon.getMinor());
+                            for (Object b : newRoutes) {
+                                boolean check = true;
+                                for (Object o : routes) {
+                                    if (((Route) o).getId() == ((Route) b).getId()) {
+                                        check = false;
+                                    }
+                                }
+                                if (check) {
+                                    if (((Route) b).getId() != 0) {
+                                        routes.add(b);
+                                        change = true;
+                                    }
+                                }
+                            }
+                        }
+                    } catch(JSONException e){
                         e.printStackTrace();
                     }
-                    displayRoutes();
+                    if (change) {
+                        displayRoutes();
+                    }
+
                 }
             }
         }
@@ -131,10 +160,16 @@ public class RouteChoiceActivity extends AppCompatActivity implements AdapterVie
             HashMap<String, String> map = new HashMap<String, String>();
             map.put("title", ((Route)item).getName());
             map.put("description", ((Route)item).getDescription());
-            map.put("progress", (((Route)item).getId())+"");
+            if(((Route)item).getId()!=1){
+                map.put("progress", ("Inpikken in route bij informatiepunt "+((Route)item).getProgress()));
+            }else{
+                map.put("progress","");
+            }
+
             data.add(map);
         }
         String[] from = {"title", "description", "progress"};
+
         int[] to = {R.id.routeNaamTextView, R.id.routeBeschrijvingTextView, R.id.positieRouteTextView};
 
         SimpleAdapter adapter =
@@ -182,5 +217,6 @@ public class RouteChoiceActivity extends AppCompatActivity implements AdapterVie
         i.putExtra("major",major);
         i.putExtra("route", (Parcelable)routes.get(position));
         startActivity(i);
+        finish();
     }
 }

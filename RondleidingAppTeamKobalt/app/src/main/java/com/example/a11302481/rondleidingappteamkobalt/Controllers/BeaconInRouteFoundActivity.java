@@ -64,9 +64,9 @@ public class BeaconInRouteFoundActivity extends AppCompatActivity implements Vie
 
         route=intent.getExtras().getParcelable("route");
 
-        route.setProgress(route.getProgress()+1);
-
         major=intent.getIntExtra("major",major);
+
+        currentIndex=intent.getIntExtra("currentIndex",currentIndex);
 
         minor=route.getBeaconMinor(route.getProgress());
 
@@ -127,8 +127,8 @@ public class BeaconInRouteFoundActivity extends AppCompatActivity implements Vie
                             Beacon foundBeacon = ((Beacon) o);
                             if(foundBeacon.getMinor()==minor){
                                 if(foundBeacon.getAccuracy()>6){
-                                    Toast.makeText(getApplicationContext(), "u bent nu te ver van het informatiepunt, ga terug of zoek een nieuw informatiepunt.", Toast.LENGTH_SHORT).show();
-                                    finish();
+                                    Toast.makeText(getApplicationContext(), "u bent nu te ver van het informatiepunt, ga terug.", Toast.LENGTH_SHORT).show();
+                                    closeFunction();
                                 }
                             }
                         }
@@ -205,14 +205,16 @@ public class BeaconInRouteFoundActivity extends AppCompatActivity implements Vie
         previousButton.setOnClickListener(this);
         nextButton.setOnClickListener(this);
         closeButton.setOnClickListener(this);
-        previousButton.setVisibility(View.VISIBLE);
+        previousButton.setClickable(true);
+        previousButton.setAlpha(1f);
         nextButton.setVisibility(View.VISIBLE);
         closeButton.setVisibility(View.GONE);
 
 
         if(currentIndex==0){
 
-            previousButton.setVisibility(View.GONE);
+            previousButton.setAlpha(.5f);
+            previousButton.setClickable(false);
         }
         if((currentIndex+1)==dataToDisplay.size()){
 
@@ -223,7 +225,7 @@ public class BeaconInRouteFoundActivity extends AppCompatActivity implements Vie
 
     private void getContent(int minor) throws JSONException {
         //toewijzen van data aan beacons dit zal vervangen worden daar een call naar de api voor data ipv de statische testdata
-        List returnValue=dataSource.getDataPerBeacon(minor,major);
+        List returnValue=dataSource.getDataPerBeaconInRoute(minor,major,route.getId(),route.getProgress());
 
         dataToDisplay=(List)returnValue.get(0);
         typesOfDataToDisplay=(List)returnValue.get(1);
@@ -273,6 +275,7 @@ public class BeaconInRouteFoundActivity extends AppCompatActivity implements Vie
                 currentIndex--;
                 break;
             case R.id.closeButton:
+                route.setProgress(route.getProgress()+1);
                 closeFunction();
                 break;
         }

@@ -49,6 +49,30 @@ public class CampusModel {
         return true;
     }
 
+    public String getCampusName(int major){
+        String naam="";
+        for (Object o:campi)
+        {
+            Campus camp=(Campus)o;
+            if(camp.getMajor()==major){
+                naam=camp.getNaam();
+            }
+        }
+        return naam;
+    }
+
+    public int getCampusMajor(String campusName){
+        int major=0;
+        for (Object o:campi)
+        {
+            Campus camp=(Campus)o;
+            if(camp.getNaam()==campusName){
+                major=camp.getMajor();
+            }
+        }
+        return major;
+    }
+
     public List getCampi(){
         while(!allReceived){
 
