@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 public class RetrieveData {
     private CampusModel campusModel;
+
     public RetrieveData() {
         campusModel = new CampusModel();
     }
@@ -64,7 +65,7 @@ public class RetrieveData {
         returnList=new ArrayList<>();
         titleOfData=new ArrayList<>();
 
-        Bitmap image;
+        String image;
         String text;
         String html, title;
         String youtube;
@@ -152,7 +153,7 @@ public class RetrieveData {
 
                     case "image":
                         title = (String) jO.get("title");
-                        image = (Bitmap) jO.get("image");
+                        image = (String) jO.get("image");
                         dataToDisplay.add(i,image);
                         typesOfDataToDisplay.add(i,"image");
                         titleOfData.add(i, title);

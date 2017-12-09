@@ -16,12 +16,14 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.a11302481.rondleidingappteamkobalt.Models.Beacon;
+import com.example.a11302481.rondleidingappteamkobalt.Models.GetLink;
 import com.example.a11302481.rondleidingappteamkobalt.Models.RetrieveData;
 import com.example.a11302481.rondleidingappteamkobalt.R;
 import com.example.a11302481.rondleidingappteamkobalt.Scanner.BeaconScanner;
@@ -156,13 +158,14 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
     private void displayContent(final int index){
         //switch om verschillende soorten data te laten zien
         String type=(String)typesOfDataToDisplay.get(index);
+        GetLink link = new GetLink();
+        WebView htmlToDisplayWebView;
         switch(type){
             case "image":
-                setContentView(R.layout.image_view);
+                setContentView(R.layout.html_view);
                 checkButtons();
-                ImageView imageToDisplayImageView;
-                imageToDisplayImageView=(ImageView) findViewById(R.id.imageToDisplayImageView);
-                imageToDisplayImageView.setImageBitmap((Bitmap)dataToDisplay.get(index));
+                htmlToDisplayWebView=(WebView)findViewById(R.id.htmlToDisplayWebView);
+                htmlToDisplayWebView.loadUrl(link.verkrijgImageLink()+(String)dataToDisplay.get(index));
                 titelTextView=(TextView) findViewById(R.id.titelTextView);
                 titelTextView.setText((String)titleOfData.get(index));
                 break;
@@ -178,7 +181,7 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
             case "html":
                 setContentView(R.layout.html_view);
                 checkButtons();
-                WebView htmlToDisplayWebView=(WebView)findViewById(R.id.htmlToDisplayWebView);
+                htmlToDisplayWebView=(WebView)findViewById(R.id.htmlToDisplayWebView);
                 htmlToDisplayWebView.loadData((String)dataToDisplay.get(index), "text/html; charset=utf-8", "UTF-8");
                 titelTextView=(TextView) findViewById(R.id.titelTextView);
                 titelTextView.setText((String)titleOfData.get(index));
