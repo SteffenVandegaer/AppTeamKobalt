@@ -300,6 +300,7 @@ public class RetrieveData {
 
         //uitvoeren van de klasse en data verkrijgen in de klasse zelf.
         dataSource.execute();
+        staticTotal++;
 
         //data verkrijgen.
         jA=null;
@@ -401,6 +402,7 @@ public class RetrieveData {
         return returnList;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
     public List getBeaconName(int minor, int major) throws JSONException {
         List beaconInfo;
         beaconInfo=new ArrayList<>();

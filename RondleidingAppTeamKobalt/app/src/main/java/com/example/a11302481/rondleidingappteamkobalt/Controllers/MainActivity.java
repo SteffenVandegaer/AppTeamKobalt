@@ -70,34 +70,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startButton.setOnClickListener(this);
         dataSource=new RetrieveData();
         //opvullen van de spinner met alle campi van UCLL (statische data zal later vervangen worden door data uit de database)
-        this.arraySpinner = dataSource.getAllCampi();
-        s = (Spinner) findViewById(R.id.campusSpinner);
-        adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, arraySpinner);
-        s.setAdapter(adapter);
+        ConnectivityManager cManager = (ConnectivityManager) getSystemService(this.CONNECTIVITY_SERVICE);
+        NetworkInfo nInfo = cManager.getActiveNetworkInfo();
+        //kijken als je verbonden bent of niet en toon een toast.
+        if(nInfo != null && nInfo.isConnected()) {
+
+            this.arraySpinner = dataSource.getAllCampi();
+            s = (Spinner) findViewById(R.id.campusSpinner);
+            adapter = new ArrayAdapter<String>(this,
+                    android.R.layout.simple_spinner_item, arraySpinner);
+            s.setAdapter(adapter);
 
 
-        // check for needed permissions and if they are granted, move on
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // Logging
-            Log.w(TAG, "Location access not granted!");
-            // If not granted ask for permission
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 42);
-        }
+            // check for needed permissions and if they are granted, move on
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // Logging
+                Log.w(TAG, "Location access not granted!");
+                // If not granted ask for permission
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 42);
+            }
 
-        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-            // show toast
-            Toast.makeText(getApplicationContext(), "BLE not supported", Toast.LENGTH_SHORT).show();
+            if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+                // show toast
+                Toast.makeText(getApplicationContext(), "BLE not supported", Toast.LENGTH_SHORT).show();
 
-            // end app
+                // end app
+                finish();
+            }
+
+            btAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
+            beaconScanner=new BeaconScanner(btAdapter);
+            timerHandler.postDelayed(timerRunnable, 0);
+            searching=true;
+            startScan();
+
+        }else{
+            Toast.makeText(this, "Deze applicatie vraagt wifi of 4G, gelieve deze aan te zetten.",
+                    Toast.LENGTH_LONG).show();
             finish();
         }
 
-        btAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
-        beaconScanner=new BeaconScanner(btAdapter);
-        timerHandler.postDelayed(timerRunnable, 0);
-        searching=true;
-        startScan();
     }
 
     Handler timerHandler = new Handler();
@@ -151,6 +163,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         NetworkInfo nInfo = cManager.getActiveNetworkInfo();
         //kijken als je verbonden bent of niet en toon een toast.
         if(nInfo != null && nInfo.isConnected()) {
+
 
             int major = dataSource.getCampusId(s.getSelectedItem().toString());
             //major per campus toewijzen aan de hand van de gemaakte keuze in spinnen (zal later met data uit de database vervangen worden)
