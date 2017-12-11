@@ -23,6 +23,8 @@ import com.example.a11302481.rondleidingappteamkobalt.Models.Beacon;
 import com.example.a11302481.rondleidingappteamkobalt.Scanner.BeaconScanner;
 import com.example.a11302481.rondleidingappteamkobalt.R;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -206,32 +208,37 @@ public class SearchingActivity extends AppCompatActivity{
      *
      */
     private void beaconFound(){
-        searching=false;
-        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        // Vibrate for 500 milliseconds
-        v.vibrate(500);
-        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which){
-                    case DialogInterface.BUTTON_POSITIVE:
-                        displayContent();
-                        break;
+        try {
+            searching = false;
+            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            // Vibrate for 500 milliseconds
+            v.vibrate(500);
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
+                            displayContent();
+                            break;
 
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        List previousMinorItem=new ArrayList();
-                        previousMinorItem.add(0,nearestBeacon.getMinor());
-                        previousMinorItem.add(1,0);
-                        previousMinors.add(previousMinorItem);
-                        reset();
-                        break;
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            List previousMinorItem = new ArrayList();
+                            previousMinorItem.add(0, nearestBeacon.getMinor());
+                            previousMinorItem.add(1, 0);
+                            previousMinors.add(previousMinorItem);
+                            reset();
+                            break;
+                    }
                 }
-            }
-        };
-        RetrieveData dataSource=new RetrieveData();
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Informatiepunt:"+dataSource.getBeaconName(nearestBeacon.getMinor(),nearestBeacon.getMajor())+ " gevonden op een afstand van "+String.format( "%.2f", nearestBeacon.getAccuracy())+"m. wil u de informatie van dit punt zien?").setPositiveButton("Ja", dialogClickListener)
-                .setNegativeButton("Nee", dialogClickListener).show();
+            };
+            RetrieveData dataSource = new RetrieveData();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            List beaconInfo = dataSource.getBeaconName(nearestBeacon.getMinor(), nearestBeacon.getMajor());
+            builder.setMessage("U bevind zich in " + beaconInfo.get(1) + " bij informatiepunt " + beaconInfo.get(0) + ". wil u de informatie van dit punt zien?").setPositiveButton("Ja", dialogClickListener)
+                    .setNegativeButton("Nee", dialogClickListener).show();
+        }catch(JSONException j){
+            j.printStackTrace();
+        }
 
     }
 

@@ -69,7 +69,7 @@ public class BeaconInRouteFoundActivity extends AppCompatActivity implements Vie
 
         currentIndex=intent.getIntExtra("currentIndex",currentIndex);
 
-        minor=route.getBeaconMinor(route.getProgress());
+        minor=route.getBeaconMinor(route.getProgress()-1);
 
         //haalt content op en laat deze op het scherm zien
         try {
@@ -161,6 +161,7 @@ public class BeaconInRouteFoundActivity extends AppCompatActivity implements Vie
                 htmlToDisplayWebView.loadUrl(link.verkrijgImageLink()+(String)dataToDisplay.get(index));
                 titelTextView=(TextView) findViewById(R.id.titelTextView);
                 titelTextView.setText((String)titleOfData.get(index));
+                break;
             case "text":
                 setContentView(R.layout.text_view);
                 checkButtons();

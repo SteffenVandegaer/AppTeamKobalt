@@ -190,20 +190,25 @@ public class RetrieveData {
         returnList=new ArrayList<>();
         titleOfData=new ArrayList<>();
         int staticTotal=0;
-        Bitmap image;
+        String image;
         String text;
         String html, title;
         String youtube;
+        RetrieveDataFromApi dataSource;
+        JSONArray jA;
+        long tStart;
+
+
 
         //class instantie
-        RetrieveDataFromApi dataSource=new RetrieveDataFromApi("beacons/"+minor+'/'+major);
+        dataSource=new RetrieveDataFromApi("beacons/"+minor+'/'+major);
 
         //uitvoeren van de klasse en data verkrijgen in de klasse zelf.
         dataSource.execute();
 
         //data verkrijgen.
-        JSONArray jA = dataSource.getData();
-        long tStart = System.currentTimeMillis();
+        jA = dataSource.getData();
+        tStart = System.currentTimeMillis();
         while(jA==null&&((System.currentTimeMillis()-tStart)/1000<2)){
             jA = dataSource.getData();
         }
@@ -272,7 +277,7 @@ public class RetrieveData {
 
                     case "image":
                         title = (String) jO.get("title");
-                        image = (Bitmap) jO.get("image");
+                        image = (String) jO.get("image");
                         dataToDisplay.add(i,image);
                         typesOfDataToDisplay.add(i,"image");
                         titleOfData.add(i, title);
@@ -311,7 +316,7 @@ public class RetrieveData {
 
             //de volledige data over gaan
 
-            for(int i = staticTotal; i < jA.length(); i++) {
+            for(int i =0; i < jA.length(); i++) {
 
                 //per object de gegevens door geven.
                 JSONObject jO = (JSONObject) jA.get(i);
@@ -341,9 +346,9 @@ public class RetrieveData {
                     case "text":
                         title = (String) jO.get("title");
                         text = (String) jO.get("text");
-                        dataToDisplay.add(i, text);
-                        typesOfDataToDisplay.add(i, "text");
-                        titleOfData.add(i, title);
+                        dataToDisplay.add(i+staticTotal, text);
+                        typesOfDataToDisplay.add(i+staticTotal, "text");
+                        titleOfData.add(i+staticTotal, title);
 
                         break;
 
@@ -353,35 +358,35 @@ public class RetrieveData {
                         youtube = (String) jO.get("url");
                         String[] parts = youtube.split("v=");
                         youtube=parts[1];
-                        dataToDisplay.add(i,youtube);
-                        typesOfDataToDisplay.add(i, "youtube");
-                        titleOfData.add(i, title);
+                        dataToDisplay.add(i+staticTotal,youtube);
+                        typesOfDataToDisplay.add(i+staticTotal, "youtube");
+                        titleOfData.add(i+staticTotal, title);
 
                         break;
 
                     case "html":
                         title = (String) jO.get("title");
                         html = (String) jO.get("html");
-                        dataToDisplay.add(i,html);
-                        typesOfDataToDisplay.add(i,"html");
-                        titleOfData.add(i,title);
+                        dataToDisplay.add(i+staticTotal,html);
+                        typesOfDataToDisplay.add(i+staticTotal,"html");
+                        titleOfData.add(i+staticTotal,title);
 
                         break;
 
                     case "image":
                         title = (String) jO.get("title");
-                        image = (Bitmap) jO.get("image");
-                        dataToDisplay.add(i,image);
-                        typesOfDataToDisplay.add(i,"image");
-                        titleOfData.add(i, title);
+                        image = (String) jO.get("image");
+                        dataToDisplay.add(i+staticTotal,image);
+                        typesOfDataToDisplay.add(i+staticTotal,"image");
+                        titleOfData.add(i+staticTotal, title);
 
                         break;
                     default:
                         title = (String) jO.get("title_sn");
                         text = (String) jO.get("content_txt");
-                        dataToDisplay.add(i, text);
-                        typesOfDataToDisplay.add(i, "text");
-                        titleOfData.add(i, title);
+                        dataToDisplay.add(i+staticTotal, text);
+                        typesOfDataToDisplay.add(i+staticTotal, "text");
+                        titleOfData.add(i+staticTotal, title);
 
                 }
             }
@@ -396,17 +401,38 @@ public class RetrieveData {
         return returnList;
     }
 
-    public String getBeaconName(int minor, int major){
-        String Name="";
-        switch(minor){
-            case 11559:
-                Name="Estimote test informatiepunt";
-                break;
-            case 9:
-                Name="Galaxy S5 test informatiepunt";
-                break;
+    public List getBeaconName(int minor, int major) throws JSONException {
+        List beaconInfo;
+        beaconInfo=new ArrayList<>();
+
+        RetrieveDataFromApi dataSource=new RetrieveDataFromApi("beacon/"+minor+"/"+major);
+
+        //uitvoeren van de klasse en data verkrijgen in de klasse zelf.
+        dataSource.execute();
+
+        JSONArray jA = dataSource.getData();
+        long tStart = System.currentTimeMillis();
+        while(jA==null&&((System.currentTimeMillis()-tStart)/1000<2)){
+            jA = dataSource.getData();
         }
-        return Name;
+
+        if (jA != null){
+
+            //de volledige data over gaan
+            for(int i = 0; i < jA.length(); i++) {
+
+                //per object de gegevens door geven.
+                JSONObject jO = (JSONObject) jA.get(i);
+
+                //type aanvragen
+
+                //kijken welk type en doorgeven.
+                beaconInfo.add((String)jO.get("name"));
+                beaconInfo.add((String)jO.get("location"));
+            }
+
+        }
+        return beaconInfo;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)

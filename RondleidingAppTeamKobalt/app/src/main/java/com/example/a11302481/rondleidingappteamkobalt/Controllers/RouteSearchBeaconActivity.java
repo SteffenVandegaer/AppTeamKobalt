@@ -12,6 +12,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.a11302481.rondleidingappteamkobalt.Models.Beacon;
@@ -23,7 +26,7 @@ import java.util.List;
 
 import static com.example.a11302481.rondleidingappteamkobalt.Controllers.SearchingActivity.REQUEST_ENABLE_BT;
 
-public class RouteSearchBeaconActivity extends AppCompatActivity {
+public class RouteSearchBeaconActivity extends AppCompatActivity implements View.OnClickListener {
     private Route route;
     private boolean searching;
     private BeaconScanner beaconScanner;
@@ -31,48 +34,52 @@ public class RouteSearchBeaconActivity extends AppCompatActivity {
     long startTime = 0;
 
     private final static String TAG = RouteSearchBeaconActivity.class.getSimpleName();
-
+    private ImageButton closeButton;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_route_selected);
         Intent i = getIntent();
         majorToFind=i.getIntExtra("major",-1);
         route = i.getExtras().getParcelable("route");
-        searching=true;
+        if(route.getProgress()>route.countBeacons()){
+            setContentView(R.layout.end_route_view);
+            closeButton=(ImageButton) findViewById(R.id.closeButton);
+            closeButton.setOnClickListener(this);
 
-        // check for needed permissions and if they are granted, move on
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // Logging
-            Log.w(TAG, "Location access not granted!");
-            // If not granted ask for permission
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 42);
+        }else {
+
+            // check for needed permissions and if they are granted, move on
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // Logging
+                Log.w(TAG, "Location access not granted!");
+                // If not granted ask for permission
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 42);
+            }
+
+            if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+                // show toast
+                Toast.makeText(getApplicationContext(), "BLE not supported", Toast.LENGTH_SHORT).show();
+
+                // end app
+                finish();
+            }
+
+            // create BT intent
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            // starts the activity depending on the result
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+
+
+            BluetoothAdapter btAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
+            btAdapter.enable();
+            beaconScanner = new BeaconScanner(btAdapter, majorToFind, route.getBeaconMinor(route.getProgress() - 1), 5);
+            beaconScanner.start();
+
+            searching = true;
+            startTime = System.currentTimeMillis();
+            timerHandler.postDelayed(timerRunnable, 0);
         }
-
-        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-            // show toast
-            Toast.makeText(getApplicationContext(), "BLE not supported", Toast.LENGTH_SHORT).show();
-
-            // end app
-            finish();
-        }
-
-        // create BT intent
-        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        // starts the activity depending on the result
-        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-
-
-
-        BluetoothAdapter btAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
-        btAdapter.enable();
-        beaconScanner=new BeaconScanner(btAdapter,route.getBeaconMinor(route.getProgress()),5);
-        beaconScanner.start();
-
-        searching=true;
-        startTime = System.currentTimeMillis();
-        timerHandler.postDelayed(timerRunnable, 0);
-
     }
 
     int seconds, previousSeconds=0;
@@ -95,9 +102,10 @@ public class RouteSearchBeaconActivity extends AppCompatActivity {
                     }else{
 
                         for(Object o:beaconLijst){
+                            searching=false;
                             Beacon foundBeacon=(Beacon)o;
                             displayContent(foundBeacon);
-                            searching=false;
+
                         }
 
                     }
@@ -117,6 +125,15 @@ public class RouteSearchBeaconActivity extends AppCompatActivity {
         i.putExtra("minor", beacon.getMinor());
         i.putExtra("route", route);
         startActivity(i);
+        finish();
+    }
+
+    @Override
+    public void onClick(View v) {
+        timerHandler.removeCallbacksAndMessages(null);
+        Intent intent = new Intent(this, Route_Roaming_Activity.class);
+        intent.putExtra("major", majorToFind);// if its int type
+        startActivity(intent);
         finish();
     }
 }

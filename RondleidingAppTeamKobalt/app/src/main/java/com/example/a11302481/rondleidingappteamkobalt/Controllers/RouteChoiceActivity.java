@@ -213,6 +213,7 @@ public class RouteChoiceActivity extends AppCompatActivity implements AdapterVie
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        timerHandler.removeCallbacksAndMessages(null);
         Intent i =new Intent(this,RouteSearchBeaconActivity.class);
         i.putExtra("major",major);
         i.putExtra("route", (Parcelable)routes.get(position));

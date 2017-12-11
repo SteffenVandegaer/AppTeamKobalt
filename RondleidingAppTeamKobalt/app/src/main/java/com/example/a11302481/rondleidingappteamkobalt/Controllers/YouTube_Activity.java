@@ -104,9 +104,23 @@ public class YouTube_Activity extends YouTubeBaseActivity implements View.OnClic
                     newScreen();
                     break;
                 case R.id.closeButton:
-                    finish();
+                    closeFunction();
                     break;
             }
+    }
+
+    public void closeFunction(){
+        Intent intent;
+        if(route!=null){
+            intent = new Intent(this, RouteSearchBeaconActivity.class);
+        }else{
+            intent =new Intent(this, SearchingActivity.class);
+        }
+        intent.putExtra("major", major);
+        intent.putExtra("previousMinor",minor);
+        intent.putExtra("route",route);
+        startActivity(intent);
+        finish();
     }
 
     public void newScreen(){
