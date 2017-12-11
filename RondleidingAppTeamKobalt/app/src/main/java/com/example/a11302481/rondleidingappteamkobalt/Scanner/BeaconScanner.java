@@ -99,10 +99,11 @@ public class BeaconScanner {
                                 break;
                             }
                         }
-                        int foundMinor = (bytesScanRecord[startByte + 22] & 0xff) * 0x100 + (bytesScanRecord[startByte + 23] & 0xff);
+
 
                         if (isBeacon){
                             int foundMajor=(bytesScanRecord[startByte + 20] & 0xff) * 0x100 + (bytesScanRecord[startByte + 21] & 0xff);
+                            int foundMinor = (bytesScanRecord[startByte + 22] & 0xff) * 0x100 + (bytesScanRecord[startByte + 23] & 0xff);
                             boolean validBeacon;
                             if(majorToFind==-1){
                                 validBeacon=true;
@@ -115,7 +116,7 @@ public class BeaconScanner {
                                         if(foundMinor==minorTofind){
                                             validBeacon=true;
                                         }else{
-                                            validBeacon=true;
+                                            validBeacon=false;
                                         }
                                     }
 

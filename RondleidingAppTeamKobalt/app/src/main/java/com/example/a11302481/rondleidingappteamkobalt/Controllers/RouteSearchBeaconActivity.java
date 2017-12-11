@@ -1,9 +1,11 @@
 package com.example.a11302481.rondleidingappteamkobalt.Controllers;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Handler;
@@ -18,10 +20,12 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.a11302481.rondleidingappteamkobalt.Models.Beacon;
+import com.example.a11302481.rondleidingappteamkobalt.Models.RetrieveData;
 import com.example.a11302481.rondleidingappteamkobalt.Models.Route;
 import com.example.a11302481.rondleidingappteamkobalt.R;
 import com.example.a11302481.rondleidingappteamkobalt.Scanner.BeaconScanner;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.a11302481.rondleidingappteamkobalt.Controllers.SearchingActivity.REQUEST_ENABLE_BT;
@@ -32,6 +36,7 @@ public class RouteSearchBeaconActivity extends AppCompatActivity implements View
     private BeaconScanner beaconScanner;
     private int majorToFind;
     long startTime = 0;
+    private int setTimer;
 
     private final static String TAG = RouteSearchBeaconActivity.class.getSimpleName();
     private ImageButton closeButton;
@@ -42,6 +47,7 @@ public class RouteSearchBeaconActivity extends AppCompatActivity implements View
         Intent i = getIntent();
         majorToFind=i.getIntExtra("major",-1);
         route = i.getExtras().getParcelable("route");
+        setTimer=i.getExtras().getInt("algeweest",0);
         if(route.getProgress()>route.countBeacons()){
             setContentView(R.layout.end_route_view);
             closeButton=(ImageButton) findViewById(R.id.closeButton);
@@ -82,6 +88,37 @@ public class RouteSearchBeaconActivity extends AppCompatActivity implements View
         }
     }
 
+    void showAlert(){
+        searching=false;
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        startTime=System.currentTimeMillis();
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        startTime=System.currentTimeMillis();
+                        route.setProgress(route.getProgress()-1);
+                        beaconScanner.stop();
+                        BluetoothAdapter btAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
+                        beaconScanner = new BeaconScanner(btAdapter, majorToFind, route.getBeaconMinor(route.getProgress() - 1), 5);
+                        beaconScanner.start();
+                        searching=true;
+                        break;
+                }
+                searching=true;
+            }
+        };
+        RetrieveData dataSource = new RetrieveData();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage("Het volgende informatiepunt is niet gevonden. Bent u nog onderweg? Indien u niet meer onderweg bent keer dan terug naar het vorige informtiepunt en klik nee.").setPositiveButton("Ja", dialogClickListener)
+                .setNegativeButton("Nee", dialogClickListener).show();
+    }
+
     int seconds, previousSeconds=0;
     Handler timerHandler = new Handler();
     Runnable timerRunnable = new Runnable() {
@@ -95,30 +132,63 @@ public class RouteSearchBeaconActivity extends AppCompatActivity implements View
         @Override
         public void run() {
             if(searching){
-                List beaconLijst=beaconScanner.getFoundBeacons();
-                if(!beaconLijst.isEmpty()){
-                    if(beaconLijst.get(0) instanceof Integer){
+                long millis = System.currentTimeMillis() - startTime;
+                if(setTimer!=0) {
+                    if (millis > 10000) {
+                        searching = false;
+                        showAlert();
+                    } else {
+                        List beaconLijst = beaconScanner.getFoundBeacons();
+                        if (!beaconLijst.isEmpty()) {
+                            if (beaconLijst.get(0) instanceof Integer) {
 
-                    }else{
+                            } else {
 
-                        for(Object o:beaconLijst){
-                            searching=false;
-                            Beacon foundBeacon=(Beacon)o;
-                            displayContent(foundBeacon);
+                                for (Object o : beaconLijst) {
+
+                                    if(((Beacon)o).getMinor()==route.getBeaconMinor(route.getProgress()-1)){
+                                        Beacon foundBeacon = (Beacon) o;
+                                        displayContent(foundBeacon);
+                                        searching = false;
+                                    }else{
+                                        searching=true;
+                                    }
+
+
+                                }
+
+                            }
+                        }
+                    }
+                }else{
+                    List beaconLijst = beaconScanner.getFoundBeacons();
+                    if (!beaconLijst.isEmpty()) {
+                        if (beaconLijst.get(0) instanceof Integer) {
+
+                        } else {
+
+                            for (Object o : beaconLijst) {
+                                searching = false;
+                                Beacon foundBeacon = (Beacon) o;
+                                displayContent(foundBeacon);
+
+                            }
 
                         }
-
                     }
                 }
-                timerHandler.postDelayed(this, 500);
+
             }
+            timerHandler.postDelayed(this, 500);
 
         }
     };
 
     public void displayContent(Beacon beacon){
         //deze functie start de BeaconFoundActivity op en geeft de info ban het dichtsbijzijnde beacon weer
-
+        timerHandler.removeCallbacksAndMessages(null);
+        beaconScanner.stop();
+        searching=false;
         Intent i = new Intent(this, BeaconInRouteFoundActivity.class);
 
         i.putExtra("major", beacon.getMajor());

@@ -114,40 +114,40 @@ public class SearchingActivity extends AppCompatActivity{
         @Override
         public void run() {
             //timerHandler.removeCallbacksAndMessages(null);
-            if(searching){
-                List beaconLijst=beaconScanner.getFoundBeacons();
-                if(!beaconLijst.isEmpty()){
-                    if(beaconLijst.get(0) instanceof Integer){
+            if(searching) {
+                List beaconLijst = beaconScanner.getFoundBeacons();
+                if (!beaconLijst.isEmpty()) {
+                    if (beaconLijst.get(0) instanceof Integer) {
 
-                    }else{
+                    } else {
 
-                        for(Object o:beaconLijst){
-                            Beacon foundBeacon=(Beacon)o;
-                            if(nearestBeacon==null){
-                                nearestBeacon=foundBeacon;
-                            }else{
-                                if(previousMinors.size()>=1){
-                                    for(Object O:previousMinors){
+                        for (Object o : beaconLijst) {
+                            Beacon foundBeacon = (Beacon) o;
+                            if (nearestBeacon == null) {
+                                nearestBeacon = foundBeacon;
+                            } else {
+                                if (previousMinors.size() >= 1) {
+                                    for (Object O : previousMinors) {
                                         List<Integer> i = ((List<Integer>) O);
-                                        if(foundBeacon.getMinor()!=i.get(0)){
-                                            if(nearestBeacon.getAccuracy()>foundBeacon.getAccuracy()){
-                                                nearestBeacon=foundBeacon;
-                                                searching=false;
-                                                List previousMinor=new ArrayList();
-                                                previousMinor.add(0,nearestBeacon.getMinor());
-                                                previousMinor.add(1,0);
+                                        if (foundBeacon.getMinor() != i.get(0)) {
+                                            if (nearestBeacon.getAccuracy() > foundBeacon.getAccuracy()) {
+                                                nearestBeacon = foundBeacon;
+                                                searching = false;
+                                                List previousMinor = new ArrayList();
+                                                previousMinor.add(0, nearestBeacon.getMinor());
+                                                previousMinor.add(1, 0);
                                                 previousMinors.add(previousMinor);
                                                 beaconFound();
                                                 break;
                                             }
                                         }
                                     }
-                                }else{
-                                    nearestBeacon=foundBeacon;
-                                    searching=false;
-                                    List previousMinor=new ArrayList();
-                                    previousMinor.add(0,nearestBeacon.getMinor());
-                                    previousMinor.add(1,0);
+                                } else {
+                                    nearestBeacon = foundBeacon;
+                                    searching = false;
+                                    List previousMinor = new ArrayList();
+                                    previousMinor.add(0, nearestBeacon.getMinor());
+                                    previousMinor.add(1, 0);
                                     previousMinors.add(previousMinor);
                                     beaconFound();
                                 }
@@ -159,42 +159,42 @@ public class SearchingActivity extends AppCompatActivity{
                     }
                 }
                 //timerHandler.postDelayed(timerRunnable, 0);
-            }
 
 
-            long millis = System.currentTimeMillis() - startTime;
-            seconds = (int) (millis / 1000);
+                long millis = System.currentTimeMillis() - startTime;
+                seconds = (int) (millis / 1000);
 
-            int teller=0;
-            List<Object> indexesToDelete=new ArrayList<>();
-            String test= "";
-            if(previousSeconds!=seconds){
-                previousSeconds=seconds;
-                if(previousMinors.size()>0) {
-                    for (Object O : previousMinors) {
-                        List<Integer> i = ((List<Integer>) O);
-                        if (i.get(1) >= 10) {
-                            indexesToDelete.add(O);
-                        } else {
-                            List previousMinor = new ArrayList();
-                            previousMinor.add(0, i.get(0));
-                            previousMinor.add(1, i.get(1) + 1);
-                            previousMinors.set(teller, previousMinor);
+                int teller = 0;
+                List<Object> indexesToDelete = new ArrayList<>();
+                String test = "";
+                if (previousSeconds != seconds) {
+                    previousSeconds = seconds;
+                    if (previousMinors.size() > 0) {
+                        for (Object O : previousMinors) {
+                            List<Integer> i = ((List<Integer>) O);
+                            if (i.get(1) >= 10) {
+                                indexesToDelete.add(O);
+                            } else {
+                                List previousMinor = new ArrayList();
+                                previousMinor.add(0, i.get(0));
+                                previousMinor.add(1, i.get(1) + 1);
+                                previousMinors.set(teller, previousMinor);
+                            }
+                            test += i.get(0) + " ,";
+                            teller++;
                         }
-                        test+=i.get(0)+" ,";
-                        teller++;
                     }
-                }
 
-                if(indexesToDelete.size()>0){
-                    int size=indexesToDelete.size();
-                    for(int i=size;i>0;i--){
-                        previousMinors.remove(indexesToDelete.get(i-1));
+                    if (indexesToDelete.size() > 0) {
+                        int size = indexesToDelete.size();
+                        for (int i = size; i > 0; i--) {
+                            previousMinors.remove(indexesToDelete.get(i - 1));
+                        }
                     }
+                    testTextView.setText(test);
+
+
                 }
-                testTextView.setText(test);
-
-
             }
             timerHandler.postDelayed(this, 500);
         }
@@ -292,7 +292,6 @@ public class SearchingActivity extends AppCompatActivity{
     private void reset(){
         startTime=System.currentTimeMillis();
         searching=true;
-
     }
 
     /**

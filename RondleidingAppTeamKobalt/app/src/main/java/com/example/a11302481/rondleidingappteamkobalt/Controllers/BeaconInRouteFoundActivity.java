@@ -246,6 +246,7 @@ public class BeaconInRouteFoundActivity extends AppCompatActivity implements Vie
         intent.putExtra("major", major);
         intent.putExtra("previousMinor",minor);
         intent.putExtra("route",route);
+        intent.putExtra("algeweest",1);
         startActivity(intent);
         finish();
     }
