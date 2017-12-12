@@ -235,7 +235,8 @@ public class SearchingActivity extends AppCompatActivity{
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             List beaconInfo = dataSource.getBeaconName(nearestBeacon.getMinor(), nearestBeacon.getMajor());
             builder.setMessage("U bevind zich in " + beaconInfo.get(1) + " bij informatiepunt " + beaconInfo.get(0) + ". wil u de informatie van dit punt zien?").setPositiveButton("Ja", dialogClickListener)
-                    .setNegativeButton("Nee", dialogClickListener).show();
+                    .setNegativeButton("Nee", dialogClickListener).setCancelable(false).show();
+
         }catch(JSONException j){
             j.printStackTrace();
         }

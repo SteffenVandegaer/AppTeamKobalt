@@ -116,10 +116,10 @@ public class RouteSearchBeaconActivity extends AppCompatActivity implements View
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setMessage("Het volgende informatiepunt is niet gevonden. Bent u nog onderweg? Indien u niet meer onderweg bent keer dan terug naar het vorige informtiepunt en klik nee.").setPositiveButton("Ja", dialogClickListener)
-                .setNegativeButton("Nee", dialogClickListener).show();
+                .setNegativeButton("Nee", dialogClickListener).setCancelable(false).show();
     }
 
-    int seconds, previousSeconds=0;
+
     Handler timerHandler = new Handler();
     Runnable timerRunnable = new Runnable() {
 
