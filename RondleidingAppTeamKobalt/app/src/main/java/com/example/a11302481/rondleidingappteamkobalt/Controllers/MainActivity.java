@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -27,7 +28,7 @@ import com.example.a11302481.rondleidingappteamkobalt.Scanner.BeaconScanner;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements OnClickListener {
 
     private String[] arraySpinner;
 
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             s.setAdapter(adapter);
 
 
+
             // check for needed permissions and if they are granted, move on
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 // Logging
@@ -110,6 +112,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             finish();
         }
 
+    }
+
+    private OnClickListener spinnerKlik() {
+
+        return this;
     }
 
     Handler timerHandler = new Handler();
@@ -155,6 +162,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      *
      * @param v
      */
+
+    int teller=0;
     public void onClick(View v) {
 
         //connectivity opzetten
@@ -180,6 +189,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(this, "Deze applicatie vraagt wifi of 4G, gelieve deze aan te zetten.",
                     Toast.LENGTH_LONG).show();
         }
+
+
+
+
     }
 
     /**
