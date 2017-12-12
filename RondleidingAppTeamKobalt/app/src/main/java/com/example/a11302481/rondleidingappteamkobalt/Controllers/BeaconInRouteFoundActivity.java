@@ -101,47 +101,10 @@ public class BeaconInRouteFoundActivity extends AppCompatActivity implements Vie
         btAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
         beaconScanner=new BeaconScanner(btAdapter,major);
 
-        timerHandler.postDelayed(timerRunnable, 0);
-        searching=true;
-
         startScan();
     }
 
-    Handler timerHandler = new Handler();
-    Runnable timerRunnable = new Runnable() {
 
-        /**
-         *
-         * runs without a timer by reposting this handler at the end of the runnable.
-         * If the timer is ended and there is an beacon, the beaconfound function is activated.
-         *
-         */
-        @Override
-        public void run() {
-            if(searching){
-                List beaconLijst=beaconScanner.getFoundBeacons();
-                if(!beaconLijst.isEmpty()){
-                    if(beaconLijst.get(0) instanceof Integer){
-
-                    }else {
-                        for (Object o : beaconLijst) {
-                            Beacon foundBeacon = ((Beacon) o);
-                            if(foundBeacon.getMinor()==minor){
-                                if(foundBeacon.getAccuracy()>6){
-                                    Toast.makeText(getApplicationContext(), "u bent nu te ver van het informatiepunt, ga terug.", Toast.LENGTH_SHORT).show();
-                                    closeFunction();
-                                }
-                            }
-                        }
-                        searching = false;
-
-                    }
-                }
-            }
-
-            timerHandler.postDelayed(this, 500);
-        }
-    };
 
     /**
      * Shows correct page according to content.
@@ -241,7 +204,6 @@ public class BeaconInRouteFoundActivity extends AppCompatActivity implements Vie
      *
      */
     public void closeFunction(){
-
         Intent intent = new Intent(this, RouteSearchBeaconActivity.class);
         intent.putExtra("major", major);
         intent.putExtra("previousMinor",minor);

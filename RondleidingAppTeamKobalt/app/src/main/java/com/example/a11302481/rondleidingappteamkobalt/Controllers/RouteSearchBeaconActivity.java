@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -90,6 +91,9 @@ public class RouteSearchBeaconActivity extends AppCompatActivity implements View
 
     void showAlert(){
         searching=false;
+        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        // Vibrate for 500 milliseconds
+        v.vibrate(500);
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -184,7 +188,10 @@ public class RouteSearchBeaconActivity extends AppCompatActivity implements View
         }
     };
 
+
+
     public void displayContent(Beacon beacon){
+
         //deze functie start de BeaconFoundActivity op en geeft de info ban het dichtsbijzijnde beacon weer
         timerHandler.removeCallbacksAndMessages(null);
         beaconScanner.stop();
@@ -194,6 +201,9 @@ public class RouteSearchBeaconActivity extends AppCompatActivity implements View
         i.putExtra("major", beacon.getMajor());
         i.putExtra("minor", beacon.getMinor());
         i.putExtra("route", route);
+        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        // Vibrate for 500 milliseconds
+        v.vibrate(500);
         startActivity(i);
         finish();
     }
@@ -205,5 +215,23 @@ public class RouteSearchBeaconActivity extends AppCompatActivity implements View
         intent.putExtra("major", majorToFind);// if its int type
         startActivity(intent);
         finish();
+    }
+
+    public void closeFunction(){
+        timerHandler.removeCallbacksAndMessages(null);
+        beaconScanner.stop();
+        Intent intent = new Intent(this, Route_Roaming_Activity.class);
+        intent.putExtra("major", majorToFind);
+        startActivity(intent);
+        finish();
+    }
+
+    /**
+     *
+     * If back button is pressed the close function is called.
+     *
+     */
+    public void onBackPressed(){
+        closeFunction();
     }
 }
