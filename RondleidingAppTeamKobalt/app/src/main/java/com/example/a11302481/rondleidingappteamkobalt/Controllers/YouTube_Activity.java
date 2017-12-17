@@ -104,6 +104,10 @@ public class YouTube_Activity extends YouTubeBaseActivity implements View.OnClic
                     newScreen();
                     break;
                 case R.id.closeButton:
+                    if(route!=null){
+                        route.setProgress(route.getProgress()+1);
+                    }
+
                     closeFunction();
                     break;
             }

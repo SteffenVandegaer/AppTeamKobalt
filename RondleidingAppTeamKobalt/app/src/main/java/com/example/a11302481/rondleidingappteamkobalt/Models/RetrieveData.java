@@ -296,6 +296,10 @@ public class RetrieveData {
 
         }
 
+        staticTotal++;
+        dataToDisplay.add(staticTotal, "Separator");
+        typesOfDataToDisplay.add(staticTotal, "text");
+        titleOfData.add(staticTotal, "Separator");
         dataSource=new RetrieveDataFromApi("routen/content/"+routeId+"/"+sequence);
 
         //uitvoeren van de klasse en data verkrijgen in de klasse zelf.
