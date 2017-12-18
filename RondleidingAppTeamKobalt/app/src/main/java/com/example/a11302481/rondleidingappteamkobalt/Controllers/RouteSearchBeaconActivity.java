@@ -49,7 +49,7 @@ public class RouteSearchBeaconActivity extends AppCompatActivity implements View
         majorToFind=i.getIntExtra("major",-1);
         route = i.getExtras().getParcelable("route");
         setTimer=i.getExtras().getInt("algeweest",0);
-        if(route.getProgress()>route.countBeacons()){
+        if(route.getProgress()+1>route.countBeacons()){
             setContentView(R.layout.end_route_view);
             closeButton=(ImageButton) findViewById(R.id.closeButton);
             closeButton.setOnClickListener(this);
@@ -80,12 +80,13 @@ public class RouteSearchBeaconActivity extends AppCompatActivity implements View
 
             BluetoothAdapter btAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
             btAdapter.enable();
-            beaconScanner = new BeaconScanner(btAdapter, majorToFind, route.getBeaconMinor(route.getProgress() - 1), 5);
+            beaconScanner = new BeaconScanner(btAdapter, majorToFind, route.getBeaconMinor(route.getProgress()), 5);
             beaconScanner.start();
 
             searching = true;
             startTime = System.currentTimeMillis();
             timerHandler.postDelayed(timerRunnable, 0);
+
         }
     }
 
@@ -104,13 +105,7 @@ public class RouteSearchBeaconActivity extends AppCompatActivity implements View
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
-                        startTime=System.currentTimeMillis();
-                        route.setProgress(route.getProgress()-1);
-                        beaconScanner.stop();
-                        BluetoothAdapter btAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
-                        beaconScanner = new BeaconScanner(btAdapter, majorToFind, route.getBeaconMinor(route.getProgress() - 1), 5);
-                        beaconScanner.start();
-                        searching=true;
+                        resetFunction();
                         break;
                 }
                 searching=true;
@@ -123,6 +118,21 @@ public class RouteSearchBeaconActivity extends AppCompatActivity implements View
                 .setNegativeButton("Nee", dialogClickListener).setCancelable(false).show();
     }
 
+    public void resetFunction(){
+        startTime=System.currentTimeMillis();
+        if(route.getProgress()>0) {
+            route.setProgress(route.getProgress() - 1);
+        }
+        timerHandler.removeCallbacksAndMessages(null);
+        beaconScanner.stop();
+        searching=false;
+        Intent intent = new Intent(this, RouteSearchBeaconActivity.class);
+        intent.putExtra("major", majorToFind);
+        intent.putExtra("route",route);
+        intent.putExtra("algeweest",1);
+        startActivity(intent);
+        finish();
+    }
 
     Handler timerHandler = new Handler();
     Runnable timerRunnable = new Runnable() {
@@ -150,7 +160,7 @@ public class RouteSearchBeaconActivity extends AppCompatActivity implements View
 
                                 for (Object o : beaconLijst) {
 
-                                    if(((Beacon)o).getMinor()==route.getBeaconMinor(route.getProgress()-1)){
+                                    if(((Beacon)o).getMinor()==route.getBeaconMinor(route.getProgress())){
                                         Beacon foundBeacon = (Beacon) o;
                                         displayContent(foundBeacon);
                                         searching = false;

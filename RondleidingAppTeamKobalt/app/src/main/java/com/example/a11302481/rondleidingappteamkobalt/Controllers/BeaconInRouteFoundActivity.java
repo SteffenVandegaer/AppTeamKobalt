@@ -69,7 +69,7 @@ public class BeaconInRouteFoundActivity extends AppCompatActivity implements Vie
 
         currentIndex=intent.getIntExtra("currentIndex",currentIndex);
 
-        minor=route.getBeaconMinor(route.getProgress()-1);
+        minor=route.getBeaconMinor(route.getProgress());
 
         //haalt content op en laat deze op het scherm zien
         try {
@@ -153,6 +153,13 @@ public class BeaconInRouteFoundActivity extends AppCompatActivity implements Vie
                 startActivity(i);
                 finish();
                 break;
+            case "sep":
+                setContentView(R.layout.separator_view);
+                checkButtons();
+
+                /*titelTextView=(TextView) findViewById(R.id.titelTextView);
+                titelTextView.setText((String)titleOfData.get(index));*/
+
         }
 
     }

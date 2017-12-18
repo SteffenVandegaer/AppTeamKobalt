@@ -296,15 +296,10 @@ public class RetrieveData {
 
         }
 
-        staticTotal++;
-        dataToDisplay.add(staticTotal, "Separator");
-        typesOfDataToDisplay.add(staticTotal, "text");
-        titleOfData.add(staticTotal, "Separator");
         dataSource=new RetrieveDataFromApi("routen/content/"+routeId+"/"+sequence);
-
         //uitvoeren van de klasse en data verkrijgen in de klasse zelf.
         dataSource.execute();
-        staticTotal++;
+
 
         //data verkrijgen.
         jA=null;
@@ -318,6 +313,13 @@ public class RetrieveData {
 
 
         }else{
+
+            staticTotal++;
+            dataToDisplay.add(staticTotal, "Separator");
+            typesOfDataToDisplay.add(staticTotal, "sep");
+            titleOfData.add(staticTotal, "Separator");
+
+            staticTotal++;
 
             //de volledige data over gaan
 

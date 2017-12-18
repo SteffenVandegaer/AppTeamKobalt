@@ -160,8 +160,14 @@ public class RouteChoiceActivity extends AppCompatActivity implements AdapterVie
             HashMap<String, String> map = new HashMap<String, String>();
             map.put("title", ((Route)item).getName());
             map.put("description", ((Route)item).getDescription());
-            if(((Route)item).getId()!=1){
-                map.put("progress", ("Inpikken in route bij informatiepunt "+((Route)item).getProgress()));
+            if(((Route)item).getProgress()!=0){
+                RetrieveData source=new RetrieveData();
+                try {
+                    List beaconData=source.getBeaconName(((Route)item).getBeaconMinor(((Route)item).getProgress()),major);
+                    map.put("progress", ("Inpikken in route op "+beaconData.get(1)+" bij informatiepunt "+beaconData.get(0)));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }else{
                 map.put("progress","");
             }
