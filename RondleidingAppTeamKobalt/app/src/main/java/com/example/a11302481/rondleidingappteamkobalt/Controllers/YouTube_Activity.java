@@ -117,12 +117,13 @@ public class YouTube_Activity extends YouTubeBaseActivity implements View.OnClic
         Intent intent;
         if(route!=null){
             intent = new Intent(this, RouteSearchBeaconActivity.class);
+            intent.putExtra("route",route);
         }else{
             intent =new Intent(this, SearchingActivity.class);
         }
         intent.putExtra("major", major);
         intent.putExtra("previousMinor",minor);
-        intent.putExtra("route",route);
+
         startActivity(intent);
         finish();
     }

@@ -163,7 +163,9 @@ public class RouteSearchBeaconActivity extends AppCompatActivity implements View
                                     if(((Beacon)o).getMinor()==route.getBeaconMinor(route.getProgress())){
                                         Beacon foundBeacon = (Beacon) o;
                                         displayContent(foundBeacon);
+
                                         searching = false;
+                                        break;
                                     }else{
                                         searching=true;
                                     }
@@ -182,9 +184,14 @@ public class RouteSearchBeaconActivity extends AppCompatActivity implements View
                         } else {
 
                             for (Object o : beaconLijst) {
-                                searching = false;
-                                Beacon foundBeacon = (Beacon) o;
-                                displayContent(foundBeacon);
+                                if(((Beacon)o).getMinor()==route.getBeaconMinor(route.getProgress())){
+                                    Beacon foundBeacon = (Beacon) o;
+                                    displayContent(foundBeacon);
+                                    searching = false;
+                                    break;
+                                }else{
+                                    searching=true;
+                                }
 
                             }
 
@@ -203,8 +210,9 @@ public class RouteSearchBeaconActivity extends AppCompatActivity implements View
     public void displayContent(Beacon beacon){
 
         //deze functie start de BeaconFoundActivity op en geeft de info ban het dichtsbijzijnde beacon weer
-        timerHandler.removeCallbacksAndMessages(null);
         beaconScanner.stop();
+        timerHandler.removeCallbacksAndMessages(null);
+
         searching=false;
         Intent i = new Intent(this, BeaconInRouteFoundActivity.class);
 
