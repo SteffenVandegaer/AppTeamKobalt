@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
      * Check permissions an d start the scan for a beacon.
      *
      * @param savedInstanceState
-     */
+     **/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +77,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         if(nInfo != null && nInfo.isConnected()) {
 
             this.arraySpinner = dataSource.getAllCampi();
+            if(this.arraySpinner[0]==""){
+                Intent i=new Intent(this, MainActivity.class);
+                startActivity(i);
+            }
             s = (Spinner) findViewById(R.id.campusSpinner);
             adapter = new ArrayAdapter<String>(this,
                     android.R.layout.simple_spinner_item, arraySpinner);
