@@ -210,9 +210,7 @@ public class SearchingActivity extends AppCompatActivity{
     private void beaconFound(){
         try {
             searching = false;
-            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-            // Vibrate for 500 milliseconds
-            v.vibrate(500);
+
             DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -234,9 +232,15 @@ public class SearchingActivity extends AppCompatActivity{
             RetrieveData dataSource = new RetrieveData();
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             List beaconInfo = dataSource.getBeaconName(nearestBeacon.getMinor(), nearestBeacon.getMajor());
-            builder.setMessage("U bevind zich in " + beaconInfo.get(1) + " bij informatiepunt " + beaconInfo.get(0) + ". wil u de informatie van dit punt zien?").setPositiveButton("Ja", dialogClickListener)
-                    .setNegativeButton("Nee", dialogClickListener).setCancelable(false).show();
-
+            try {
+                builder.setMessage("U bevind zich in " + beaconInfo.get(1) + " bij informatiepunt " + beaconInfo.get(0) + ". wil u de informatie van dit punt zien?").setPositiveButton("Ja", dialogClickListener)
+                        .setNegativeButton("Nee", dialogClickListener).setCancelable(false).show();
+                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                // Vibrate for 500 milliseconds
+                v.vibrate(500);
+            }catch(Exception e){
+                searching=true;
+            }
         }catch(JSONException j){
             j.printStackTrace();
         }
