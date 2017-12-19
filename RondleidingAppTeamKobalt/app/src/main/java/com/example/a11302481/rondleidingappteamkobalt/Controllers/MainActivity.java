@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
 
     private String[] arraySpinner;
 
-    private Button startButton;
+    private Button startButton, easterButton, backButton;
     private Spinner s;
     private RetrieveData dataSource;
     private final static String TAG = MainActivity.class.getSimpleName();
@@ -67,6 +68,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        easterButton=(Button) findViewById(R.id.easterButton);
+        easterButton.setOnClickListener(this);
+        easterButton.setBackgroundColor(Color.TRANSPARENT);
         startButton=(Button) findViewById(R.id.startButton);
         startButton.setOnClickListener(this);
         dataSource=new RetrieveData();
@@ -118,11 +123,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
 
     }
 
-    private OnClickListener spinnerKlik() {
-
-        return this;
-    }
-
     Handler timerHandler = new Handler();
     Runnable timerRunnable = new Runnable() {
 
@@ -170,32 +170,46 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     int teller=0;
     public void onClick(View v) {
 
-        //connectivity opzetten
-        ConnectivityManager cManager = (ConnectivityManager) getSystemService(this.CONNECTIVITY_SERVICE);
-        //bekijken als men verbonden is.
-        NetworkInfo nInfo = cManager.getActiveNetworkInfo();
-        //kijken als je verbonden bent of niet en toon een toast.
-        if(nInfo != null && nInfo.isConnected()) {
+        switch (v.getId()) {
+            case R.id.easterButton:
+                teller++;
+                if(teller==10){
+                    teller=0;
+                    setContentView(R.layout.activity_easter);
+                    backButton=(Button) findViewById(R.id.backButton);
+                    backButton.setOnClickListener(this);
+                }
+                break;
+            case R.id.backButton:
+                Intent i=new Intent(this, MainActivity.class);
+                startActivity(i);
+                break;
+            case R.id.startButton:
+                //connectivity opzetten
+                ConnectivityManager cManager = (ConnectivityManager) getSystemService(this.CONNECTIVITY_SERVICE);
+                //bekijken als men verbonden is.
+                NetworkInfo nInfo = cManager.getActiveNetworkInfo();
+                //kijken als je verbonden bent of niet en toon een toast.
+                if(nInfo != null && nInfo.isConnected()) {
 
 
-            int major = dataSource.getCampusId(s.getSelectedItem().toString());
-            //major per campus toewijzen aan de hand van de gemaakte keuze in spinnen (zal later met data uit de database vervangen worden)
+                    int major = dataSource.getCampusId(s.getSelectedItem().toString());
+                    //major per campus toewijzen aan de hand van de gemaakte keuze in spinnen (zal later met data uit de database vervangen worden)
 
-            //starten van nieuwe activity en het doorgeven van de gewenste major aan de nieuwe activity
-            Intent intent = new Intent(this, Route_Roaming_Activity.class);
-            intent.putExtra("major", major);// if its int type
+                    //starten van nieuwe activity en het doorgeven van de gewenste major aan de nieuwe activity
+                    Intent intent = new Intent(this, Route_Roaming_Activity.class);
+                    intent.putExtra("major", major);// if its int type
 
-            stopScan();
-            timerHandler.removeCallbacksAndMessages(null);
+                    stopScan();
+                    timerHandler.removeCallbacksAndMessages(null);
 
-            startActivity(intent);
-        }else{
-            Toast.makeText(this, "Deze applicatie vraagt wifi of 4G, gelieve deze aan te zetten.",
-                    Toast.LENGTH_LONG).show();
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(this, "Deze applicatie vraagt wifi of 4G, gelieve deze aan te zetten.",
+                            Toast.LENGTH_LONG).show();
+                }
+                break;
         }
-
-
-
 
     }
 
