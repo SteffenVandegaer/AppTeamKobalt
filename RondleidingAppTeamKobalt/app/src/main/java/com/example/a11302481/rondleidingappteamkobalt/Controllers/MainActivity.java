@@ -82,7 +82,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         if(nInfo != null && nInfo.isConnected()) {
 
             this.arraySpinner = dataSource.getAllCampi();
-            if(this.arraySpinner[0]==""){
+
+            if(this.arraySpinner[0].isEmpty()){
                 Intent i=new Intent(this, MainActivity.class);
                 startActivity(i);
             }
