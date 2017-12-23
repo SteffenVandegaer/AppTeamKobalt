@@ -30,6 +30,7 @@ public class YouTube_Activity extends YouTubeBaseActivity implements View.OnClic
     private ImageButton previousButton;
     private ImageButton closeButton;
     private Route route;
+    private int direction;
     private int currentIndex,maxIndex,major,minor;
 
     @Override
@@ -96,10 +97,12 @@ public class YouTube_Activity extends YouTubeBaseActivity implements View.OnClic
             //navigatie via de buttons op het scherm
             switch (v.getId()) {
                 case R.id.nextButton:
+                    direction=1;
                     currentIndex++;
                     newScreen();
                     break;
                 case R.id.previousButton:
+                    direction=-1;
                     currentIndex--;
                     newScreen();
                     break;
@@ -143,6 +146,7 @@ public class YouTube_Activity extends YouTubeBaseActivity implements View.OnClic
         intent.putExtra("major",major);
         intent.putExtra("minor",minor);
         intent.putExtra("route",route);
+        intent.putExtra("direction",direction);
         intent.putExtra("currentIndex",currentIndex);
         startActivity(intent);
         finish();

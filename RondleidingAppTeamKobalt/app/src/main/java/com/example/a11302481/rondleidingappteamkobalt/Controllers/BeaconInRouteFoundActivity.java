@@ -37,7 +37,7 @@ public class BeaconInRouteFoundActivity extends AppCompatActivity implements Vie
     private List dataToDisplay;
     private List typesOfDataToDisplay;
     private List titleOfData;
-    private int currentIndex=0;
+    private int currentIndex=0, direction=1;
     private ImageButton nextButton;
     private ImageButton previousButton;
     private ImageButton closeButton;
@@ -68,6 +68,7 @@ public class BeaconInRouteFoundActivity extends AppCompatActivity implements Vie
         major=intent.getIntExtra("major",major);
 
         currentIndex=intent.getIntExtra("currentIndex",currentIndex);
+        direction=intent.getIntExtra("direction",1);
 
         minor=route.getBeaconMinor(route.getProgress());
 
@@ -157,8 +158,13 @@ public class BeaconInRouteFoundActivity extends AppCompatActivity implements Vie
                 setContentView(R.layout.separator_view);
                 checkButtons();
 
-                /*titelTextView=(TextView) findViewById(R.id.titelTextView);
-                titelTextView.setText((String)titleOfData.get(index));*/
+                titelTextView=(TextView) findViewById(R.id.messageTextView);
+                if(direction==1){
+                    titelTextView.setText("U gaat het informatiepunt nu verlaten");
+                }else{
+                    titelTextView.setText("U gaat nu terug naar de informatie van het huidige punt");
+                }
+
 
         }
 
@@ -241,9 +247,11 @@ public class BeaconInRouteFoundActivity extends AppCompatActivity implements Vie
         //navigatie via de buttons op het scherm
         switch (v.getId()) {
             case R.id.nextButton:
+                direction=1;
                 currentIndex++;
                 break;
             case R.id.previousButton:
+                direction=-1;
                 currentIndex--;
                 break;
             case R.id.closeButton:

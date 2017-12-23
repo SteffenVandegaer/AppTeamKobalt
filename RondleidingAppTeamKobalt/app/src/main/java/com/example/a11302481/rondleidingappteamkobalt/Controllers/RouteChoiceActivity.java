@@ -126,7 +126,12 @@ public class RouteChoiceActivity extends AppCompatActivity implements AdapterVie
                                 boolean check = true;
                                 for (Object o : routes) {
                                     if (((Route) o).getId() == ((Route) b).getId()) {
-                                        check = false;
+                                        if(((Route)b).getProgress()==((Route) b).getProgress()){
+                                            check = false;
+                                        }else{
+                                            check=true;
+                                        }
+
                                     }
                                 }
                                 if (check) {
