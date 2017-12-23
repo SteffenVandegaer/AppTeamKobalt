@@ -99,56 +99,44 @@ public class RouteChoiceActivity extends AppCompatActivity implements AdapterVie
                 if(beaconLijst.get(0) instanceof Integer){
 
                 }else {
-                    for (Object o : beaconLijst) {
-                        Beacon foundBeacon = ((Beacon) o);
-                        if (nearestBeacon == null) {
-                            nearestBeacon = foundBeacon;
-                        } else {
-                            if (nearestBeacon.getAccuracy() > foundBeacon.getAccuracy()) {
-                                nearestBeacon = foundBeacon;
+                    for (Object beacon : beaconLijst) {
+                        nearestBeacon=(Beacon)beacon;
+                        try {
+                            for (Object i : previousMinors) {
+                                if (((int) i) == nearestBeacon.getMinor()) {
+                                    newbeacon = false;
+                                }
                             }
-                        }
-                    }
-                }
-            }
-            if(nearestBeacon!=null){
-                if((System.currentTimeMillis()-tStart)/1000>5){
-                    try {
-                        for (Object i : previousMinors) {
-                            if (((int) i) == nearestBeacon.getMinor()) {
-                                newbeacon = false;
-                            }
-                        }
-                        if (newbeacon) {
-                            previousMinors.add(nearestBeacon.getMinor());
-                            List newRoutes = dataSource.getRoutesWithBeacon(nearestBeacon.getMajor(), nearestBeacon.getMinor());
-                            for (Object b : newRoutes) {
-                                boolean check = true;
-                                for (Object o : routes) {
-                                    if (((Route) o).getId() == ((Route) b).getId()) {
-                                        if(((Route)b).getProgress()==((Route) b).getProgress()){
-                                            check = false;
-                                        }else{
-                                            check=true;
+                            if (newbeacon) {
+                                previousMinors.add(nearestBeacon.getMinor());
+                                List newRoutes = dataSource.getRoutesWithBeacon(nearestBeacon.getMajor(), nearestBeacon.getMinor());
+                                for (Object b : newRoutes) {
+                                    boolean check = true;
+                                    for (Object o : routes) {
+                                        if (((Route) o).getId() == ((Route) b).getId()) {
+                                            if(((Route)o).getProgress()==((Route) b).getProgress()){
+                                                check = false;
+                                            }else{
+                                                check=true;
+                                            }
+
                                         }
-
                                     }
-                                }
-                                if (check) {
-                                    if (((Route) b).getId() != 0) {
-                                        routes.add(b);
-                                        change = true;
+                                    if (check) {
+                                        if (((Route) b).getId() != 0) {
+                                            routes.add(b);
+                                            change = true;
+                                        }
                                     }
                                 }
                             }
+                        } catch(JSONException e){
+                            e.printStackTrace();
                         }
-                    } catch(JSONException e){
-                        e.printStackTrace();
+                        if (change) {
+                            displayRoutes();
+                        }
                     }
-                    if (change) {
-                        displayRoutes();
-                    }
-
                 }
             }
         }
