@@ -226,7 +226,7 @@ public class BeaconInRouteFoundActivity extends AppCompatActivity implements Vie
      *
      */
     public void onBackPressed(){
-        closeFunction();
+        //closeFunction();
     }
 
     /**

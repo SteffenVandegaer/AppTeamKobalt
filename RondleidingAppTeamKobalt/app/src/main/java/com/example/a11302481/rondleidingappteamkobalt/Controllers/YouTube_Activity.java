@@ -128,6 +128,10 @@ public class YouTube_Activity extends YouTubeBaseActivity implements View.OnClic
         finish();
     }
 
+    public void onBackPressed(){
+        //closeFunction();
+    }
+
     public void newScreen(){
         Intent intent;
         if(route!=null){
