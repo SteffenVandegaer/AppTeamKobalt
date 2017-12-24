@@ -29,9 +29,11 @@
         </activity>
         <activity
             android:name=".Controllers.MainActivity"
+            android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize" />
         <activity
             android:name=".Controllers.SearchingActivity"
+            android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize" />
         <activity
             android:name=".Controllers.BeaconFoundActivity"
@@ -39,11 +41,13 @@
         <activity
             android:name=".Controllers.Route_Roaming_Activity"
             android:screenOrientation="portrait" />
-        <activity android:name=".Controllers.RouteChoiceActivity" />
+        <activity android:name=".Controllers.RouteChoiceActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".Controllers.YouTube_Activity"
             android:configChanges="orientation|screenSize" />
-        <activity android:name=".Controllers.RouteSearchBeaconActivity" />
+        <activity android:name=".Controllers.RouteSearchBeaconActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".Controllers.BeaconInRouteFoundActivity"></activity>
     </application>
 
