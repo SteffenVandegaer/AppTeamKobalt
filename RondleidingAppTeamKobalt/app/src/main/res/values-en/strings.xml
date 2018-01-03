@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">UCLL Tour</string>
+    <string name="kies_uw_campus">Choose your campus</string>
+    <string name="ble_not_supported">BLE not supported</string>
+    <string name="start">Start</string>
+    <string name="vrij_verkennen">Explore on your own</string>
+    <string name="route_volgen">Follow a route</string>
+    <string name="volgend_informatiepunt_zoeken">Searching for next information point</string>
+    <string name="informatiepunt_zoeken">Searching Information point</string>
+    <string name="u_heeft_het_einde_van_de_route_bereikt">You have reached the end of this route</string>
+    <string name="kies_een_route">Choose a route</string>
+    <string name="routes_zoeken">Searching for routes</string>
+    <string name="u_gaat_het_informatiepunt_nu_verlaten">you are about to leave this information point</string>
+    <string name="terug_naar_vorige_content">you are now going back to the information from the current point</string>
+    <string name="beacon_not_found_in_route">The next information point wasn\'t found. Are you still on the way? In case you aren\'t tap no and go back to the previous information point.</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+</resources>

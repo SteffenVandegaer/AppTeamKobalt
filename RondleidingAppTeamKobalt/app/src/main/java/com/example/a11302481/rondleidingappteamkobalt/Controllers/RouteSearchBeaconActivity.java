@@ -47,7 +47,8 @@ public class RouteSearchBeaconActivity extends AppCompatActivity implements View
         setContentView(R.layout.activity_route_selected);
         Intent i = getIntent();
         majorToFind=i.getIntExtra("major",-1);
-        route = i.getExtras().getParcelable("route");
+        route=i.getExtras().getParcelable("route");
+
         setTimer=i.getExtras().getInt("algeweest",0);
         if(route.getProgress()+1>route.countBeacons()){
             setContentView(R.layout.end_route_view);
@@ -114,8 +115,8 @@ public class RouteSearchBeaconActivity extends AppCompatActivity implements View
         RetrieveData dataSource = new RetrieveData();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setMessage("Het volgende informatiepunt is niet gevonden. Bent u nog onderweg? Indien u niet meer onderweg bent keer dan terug naar het vorige informtiepunt en klik nee.").setPositiveButton("Ja", dialogClickListener)
-                .setNegativeButton("Nee", dialogClickListener).setCancelable(false).show();
+        builder.setMessage(R.string.beacon_not_found_in_route).setPositiveButton(R.string.yes, dialogClickListener)
+                .setNegativeButton(R.string.no, dialogClickListener).setCancelable(false).show();
     }
 
     public void resetFunction(){

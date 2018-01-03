@@ -1,11 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Rondleiding UCLL</string>
     <string name="kies_uw_campus">Kies uw Campus</string>
-    <string name="title_activity_launch" translatable="false">LaunchActivity</string>
-    <string name="ble_not_supported">BLE not supported</string>
-    <string name="next" translatable="false"><![CDATA[-->]]></string>
-    <string name="previous" translatable="false"><![CDATA[<--]]></string>
-    <string name="team_kobalt" translatable="false">Team Kobalt</string>
+    <string name="ble_not_supported">BLE niet ondersteund</string>
     <string name="start">Start</string>
     <string name="vrij_verkennen">Vrij verkennen</string>
     <string name="route_volgen">Route volgen</string>
@@ -17,6 +14,6 @@
     <string name="u_gaat_het_informatiepunt_nu_verlaten">U gaat het informatiepunt nu verlaten</string>
     <string name="terug_naar_vorige_content">U gaat nu terug naar de informatie van het huidige punt</string>
     <string name="beacon_not_found_in_route">Het volgende informatiepunt is niet gevonden. Bent u nog onderweg? Indien u niet meer onderweg bent keer dan terug naar het vorige informtiepunt en klik nee.</string>
-    <string name="yes">ja</string>
-    <string name="no">nee</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nee</string>
 </resources>

@@ -160,9 +160,9 @@ public class BeaconInRouteFoundActivity extends AppCompatActivity implements Vie
 
                 titelTextView=(TextView) findViewById(R.id.messageTextView);
                 if(direction==1){
-                    titelTextView.setText("U gaat het informatiepunt nu verlaten");
+                    titelTextView.setText(R.string.u_gaat_het_informatiepunt_nu_verlaten);
                 }else{
-                    titelTextView.setText("U gaat nu terug naar de informatie van het huidige punt");
+                    titelTextView.setText(R.string.terug_naar_vorige_content);
                 }
 
 
