@@ -19,4 +19,7 @@
     <string name="beacon_not_found_in_route">Het volgende informatiepunt is niet gevonden. Bent u nog onderweg? Indien u niet meer onderweg bent keer dan terug naar het vorige informtiepunt en klik nee.</string>
     <string name="yes">ja</string>
     <string name="no">nee</string>
+    <string name="beacon_found_1">U bevind zich in de buurt van</string>
+    <string name="beacon_found_2">bij informatiepunt</string>
+    <string name="beacon_found_3">. wil u de informatie van dit punt zien?</string>
 </resources>

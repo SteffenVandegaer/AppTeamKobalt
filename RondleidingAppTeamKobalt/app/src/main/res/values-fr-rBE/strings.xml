@@ -16,4 +16,7 @@
     <string name="beacon_not_found_in_route">Le point d\'information suivant est introuvable. Êtes-vous toujours en déplacement? Si vous n\'êtes plus sur la route, retournez au point d\'information précédent et cliquez sur non.</string>
     <string name="yes">Oui</string>
     <string name="no">Non</string>
+    <string name="beacon_found_1">" Vous êtes dans le voisinage de "</string>
+    <string name="beacon_found_2">" avec le point d'information "</string>
+    <string name="beacon_found_3">. Voulez-vous voir les informations de ce point?</string>
 </resources>

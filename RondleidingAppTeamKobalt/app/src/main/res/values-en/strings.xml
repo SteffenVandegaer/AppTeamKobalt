@@ -16,4 +16,7 @@
     <string name="beacon_not_found_in_route">The next information point wasn\'t found. Are you still on the way? In case you aren\'t tap no and go back to the previous information point.</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="beacon_found_1">"You are near "</string>
+    <string name="beacon_found_2">"by information point "</string>
+    <string name="beacon_found_3">. Do you want to see information about this point?</string>
 </resources>
