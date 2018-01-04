@@ -233,7 +233,7 @@ public class SearchingActivity extends AppCompatActivity{
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             List beaconInfo = dataSource.getBeaconName(nearestBeacon.getMinor(), nearestBeacon.getMajor());
             try {
-                builder.setMessage("U bevind zich in " + beaconInfo.get(1) + " bij informatiepunt " + beaconInfo.get(0) + ". wil u de informatie van dit punt zien?").setPositiveButton(R.string.yes, dialogClickListener)
+                builder.setMessage(this.getString(R.string.beacon_found_1) + beaconInfo.get(1) + this.getString(R.string.beacon_found_2)+ beaconInfo.get(0) + this.getString(R.string.beacon_found_3)).setPositiveButton(R.string.yes, dialogClickListener)
                         .setNegativeButton(R.string.no, dialogClickListener).setCancelable(false).show();
                 Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                 // Vibrate for 500 milliseconds
