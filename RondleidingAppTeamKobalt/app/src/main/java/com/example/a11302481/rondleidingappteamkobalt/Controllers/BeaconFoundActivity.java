@@ -166,6 +166,12 @@ public class BeaconFoundActivity extends YouTubeBaseActivity implements View.OnC
                 checkButtons();
                 htmlToDisplayWebView=(WebView)findViewById(R.id.htmlToDisplayWebView);
                 htmlToDisplayWebView.loadUrl(link.verkrijgImageLink()+(String)dataToDisplay.get(index));
+                htmlToDisplayWebView.setInitialScale(1);
+                htmlToDisplayWebView.getSettings().setJavaScriptEnabled(true);
+                htmlToDisplayWebView.getSettings().setLoadWithOverviewMode(true);
+                htmlToDisplayWebView.getSettings().setUseWideViewPort(true);
+                htmlToDisplayWebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+                htmlToDisplayWebView.setScrollbarFadingEnabled(false);
                 titelTextView=(TextView) findViewById(R.id.titelTextView);
                 titelTextView.setText((String)titleOfData.get(index));
                 break;

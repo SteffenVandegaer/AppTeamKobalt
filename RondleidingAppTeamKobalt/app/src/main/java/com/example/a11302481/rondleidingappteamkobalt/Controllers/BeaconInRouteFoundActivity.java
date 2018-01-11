@@ -122,6 +122,12 @@ public class BeaconInRouteFoundActivity extends AppCompatActivity implements Vie
                 setContentView(R.layout.html_view);
                 checkButtons();
                 htmlToDisplayWebView=(WebView)findViewById(R.id.htmlToDisplayWebView);
+                htmlToDisplayWebView.setInitialScale(1);
+                htmlToDisplayWebView.getSettings().setJavaScriptEnabled(true);
+                htmlToDisplayWebView.getSettings().setLoadWithOverviewMode(true);
+                htmlToDisplayWebView.getSettings().setUseWideViewPort(true);
+                htmlToDisplayWebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+                htmlToDisplayWebView.setScrollbarFadingEnabled(false);
                 htmlToDisplayWebView.loadUrl(link.verkrijgImageLink()+(String)dataToDisplay.get(index));
                 titelTextView=(TextView) findViewById(R.id.titelTextView);
                 titelTextView.setText((String)titleOfData.get(index));
