@@ -15,7 +15,7 @@ public class GetLink {
         //url die we gaan gebruiken.
         try {
             //men kan hier de url aanpassen als de hosting veranderd.
-            URL url = new URL("http://startworx.be/api/");
+            URL url = new URL("http://ibeacons.uclllabs.be/api/");
             return url;
             //moest er een fout zijn met de URL.
         } catch (MalformedURLException e) {
@@ -29,7 +29,7 @@ public class GetLink {
         //url die we gaan gebruiken.
         try {
             //men kan hier de url aanpassen als de hosting veranderd.
-            URL url = new URL("http://startworx.be/images/");
+            URL url = new URL("http://ibeacons.uclllabs.be/images/");
             return url;
             //moest er een fout zijn met de URL.
         } catch (MalformedURLException e) {
